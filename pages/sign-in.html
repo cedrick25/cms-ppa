@@ -1,0 +1,547 @@
+<!--
+=========================================================
+* Soft UI Dashboard 3 - v1.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
+* Copyright 2024 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <title>Sign in - CMS-PPA</title>
+  <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,800" rel="stylesheet" />
+  <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.1.0" rel="stylesheet" />
+  <script>
+    if (localStorage.getItem("auth-theme") === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  </script>
+  <style>
+    :root {
+      --auth-bg: #f4f4f5;
+      --auth-card: #fff;
+      --auth-ink: #27272a;
+      --auth-muted: #71717a;
+      --auth-line: #a1a1aa;
+      --auth-border: #d4d4d8;
+      --auth-primary: #f97316;
+      --auth-primary-dark: #ea580c;
+      --auth-field: #fff;
+      --auth-node: #27272a;
+      --auth-card-border: #e3e3e7;
+      --auth-card-w: 400px;
+      --auth-node-w: 78px;
+      --auth-inset: 36px;
+      --auth-rail-y: 112px;
+    }
+
+    html[data-theme="dark"] {
+      --auth-bg: #18181b;
+      --auth-card: #27272a;
+      --auth-ink: #f4f4f5;
+      --auth-muted: #a1a1aa;
+      --auth-line: #52525b;
+      --auth-border: #3f3f46;
+      --auth-field: #18181b;
+      --auth-node: #3f3f46;
+      --auth-card-border: #3f3f46;
+      color-scheme: dark;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--auth-bg);
+      color: var(--auth-ink);
+      font-family: Inter, sans-serif;
+    }
+
+    .auth-screen {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+
+    .traces {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .traces path {
+      fill: none;
+      stroke: var(--auth-line);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .node {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .node {
+      width: var(--auth-node-w);
+      height: 36px;
+      background: var(--auth-node);
+      border-radius: 8px;
+      box-shadow: 0 10px 18px -12px rgba(39, 39, 42, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .node-tl,
+    .node-tr {
+      top: var(--auth-rail-y);
+      transform: translateY(-50%);
+    }
+
+    .node-bl,
+    .node-br {
+      bottom: var(--auth-rail-y);
+      transform: translateY(50%);
+    }
+
+    .node-tl,
+    .node-bl {
+      left: var(--auth-inset);
+    }
+
+    .node-tr,
+    .node-br {
+      right: var(--auth-inset);
+    }
+
+    .node-dots {
+      width: 44px;
+      height: 16px;
+      background-image: radial-gradient(circle, #a1a1aa 0.9px, transparent 1.05px);
+      background-size: 7px 7px;
+      background-position: center;
+    }
+
+    .node-pin {
+      position: absolute;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      margin-top: -4px;
+      border-radius: 50%;
+      background: var(--auth-bg);
+      border: 2px solid var(--auth-line);
+    }
+
+    .node-tl .node-pin,
+    .node-bl .node-pin {
+      right: -5px;
+    }
+
+    .node-tr .node-pin,
+    .node-br .node-pin {
+      left: -5px;
+    }
+
+    .node-tl::after,
+    .node-bl::after,
+    .node-tr::after,
+    .node-br::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 22px;
+      height: 16px;
+      transform: translateY(-50%);
+      background:
+        linear-gradient(var(--auth-line), var(--auth-line)) center 1px / 100% 1.5px no-repeat,
+        linear-gradient(var(--auth-line), var(--auth-line)) center 7px / 100% 1.5px no-repeat,
+        linear-gradient(var(--auth-line), var(--auth-line)) center 13px / 100% 1.5px no-repeat;
+    }
+
+    .node-tl::after,
+    .node-bl::after {
+      right: 100%;
+    }
+
+    .node-tr::after,
+    .node-br::after {
+      left: 100%;
+    }
+
+    .auth-card {
+      position: relative;
+      z-index: 1;
+      width: min(var(--auth-card-w), 100%);
+      background: var(--auth-card);
+      border: 1px solid var(--auth-card-border);
+      border-radius: 1.15rem;
+      box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
+      padding: 2rem 1.25rem 1.5rem;
+    }
+
+    .auth-card form {
+      display: block;
+      width: 100%;
+    }
+
+    .auth-mark {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 148px;
+      height: 64px;
+      margin: 0 auto 0.35rem;
+    }
+
+    .auth-mark::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(249, 115, 22, 0.55) 1px, transparent 1.15px);
+      background-size: 8px 8px;
+      background-position: center;
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 18%, transparent 72%);
+      mask-image: radial-gradient(ellipse at center, #000 18%, transparent 72%);
+    }
+
+    .auth-logo {
+      position: relative;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid var(--auth-primary);
+      box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.14);
+      display: grid;
+      place-items: center;
+    }
+
+    .auth-logo img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
+
+    .auth-card h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--auth-ink);
+    }
+
+    .auth-card .auth-lead {
+      margin: 0.4rem 0 1.45rem;
+      text-align: center;
+      color: var(--auth-muted);
+      font-size: 0.92rem;
+    }
+
+    .field {
+      position: relative;
+      display: block;
+      width: 100%;
+      margin-bottom: 0.85rem;
+    }
+
+    .field:last-of-type {
+      margin-bottom: 1.15rem;
+    }
+
+    .field svg {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--auth-muted);
+      pointer-events: none;
+    }
+
+    .field input {
+      display: block;
+      width: 100%;
+      max-width: none;
+      height: 48px;
+      padding: 0 0.9rem 0 2.6rem;
+      border: 1px solid var(--auth-border);
+      border-radius: 0.6rem;
+      background: var(--auth-field);
+      color: var(--auth-ink);
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 400;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .field input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .field input:focus {
+      border-color: var(--auth-primary);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+    }
+
+    .auth-submit {
+      width: 100%;
+      height: 46px;
+      border: 0;
+      border-radius: 0.6rem;
+      background: var(--auth-primary);
+      color: #fff;
+      font: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 18px -8px rgba(249, 115, 22, 0.85);
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .auth-submit:hover {
+      background: var(--auth-primary-dark);
+    }
+
+    .auth-submit:active {
+      transform: translateY(1px);
+    }
+
+    .auth-submit:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.35);
+    }
+
+    .auth-submit:disabled {
+      cursor: progress;
+      opacity: 0.75;
+    }
+
+    .field input.is-invalid {
+      border-color: #ef4444;
+    }
+
+    .auth-error {
+      display: none;
+      margin: 0 0 0.85rem;
+      color: #ef4444;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .auth-error.is-visible {
+      display: block;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 1.15rem;
+      right: 1.15rem;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      height: 40px;
+      padding: 0 0.9rem;
+      border: 1px solid var(--auth-border);
+      border-radius: 999px;
+      background: var(--auth-card);
+      color: var(--auth-ink);
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 18px -12px rgba(0, 0, 0, 0.45);
+    }
+
+    .theme-toggle svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    html[data-theme="dark"] .icon-moon,
+    html:not([data-theme="dark"]) .icon-sun {
+      display: none;
+    }
+
+    @@media (max-width: 1024px) {
+      .traces,
+      .node {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"></path>
+    </svg>
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+    </svg>
+    <span class="theme-label">Dark mode</span>
+  </button>
+  <main class="auth-screen">
+    <svg class="traces" aria-hidden="true"></svg>
+
+    <div class="node node-tl" aria-hidden="true"><span class="node-dots"></span><span class="node-pin"></span></div>
+    <div class="node node-tr" aria-hidden="true"><span class="node-dots"></span><span class="node-pin"></span></div>
+    <div class="node node-bl" aria-hidden="true"><span class="node-dots"></span><span class="node-pin"></span></div>
+    <div class="node node-br" aria-hidden="true"><span class="node-dots"></span><span class="node-pin"></span></div>
+
+    <section class="auth-card">
+      <div class="auth-mark">
+        <div class="auth-logo">
+          <img src="../assets/img/logo-ct-dark.png" alt="">
+        </div>
+      </div>
+      <h1>Welcome Back</h1>
+      <p class="auth-lead">Enter your username and password to sign in</p>
+      <form role="form" id="sign-in-form" method="post" action="#" novalidate>
+        <p class="auth-error" id="auth-error" role="alert"></p>
+        <label class="field">
+          <span class="visually-hidden">Username</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.2"></circle>
+            <path d="M5 19.2c1.3-2.6 3.8-3.9 7-3.9s5.7 1.3 7 3.9"></path>
+          </svg>
+          <input type="text" name="username" placeholder="Username" autocomplete="username" required>
+        </label>
+        <label class="field">
+          <span class="visually-hidden">Password</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+            <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+          </svg>
+          <input type="password" name="password" placeholder="Password" autocomplete="current-password" required>
+        </label>
+        <button class="auth-submit" type="submit" id="sign-in-submit">
+          <span class="auth-submit-label">Sign in</span>
+        </button>
+      </form>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var svg = document.querySelector(".traces");
+      var card = document.querySelector(".auth-card");
+      var wide = window.matchMedia("(min-width: 1025px)");
+
+      function pinPoint(selector, side) {
+        var rect = document.querySelector(selector).getBoundingClientRect();
+        return {
+          x: side === "right" ? rect.right : rect.left,
+          y: rect.top + rect.height / 2
+        };
+      }
+
+      function elbow(start, corner, direction) {
+        var rise = corner.y - start.y;
+        var run = Math.abs(rise);
+        var elbowX = corner.x - direction * run;
+        var minSpan = 28;
+
+        if (direction > 0) {
+          elbowX = Math.max(start.x + minSpan, Math.min(elbowX, corner.x - 16));
+        } else {
+          elbowX = Math.min(start.x - minSpan, Math.max(elbowX, corner.x + 16));
+        }
+
+        var radius = 16;
+        var dx = corner.x - elbowX;
+        var dy = corner.y - start.y;
+        var length = Math.hypot(dx, dy) || 1;
+        var beforeX = elbowX - direction * radius;
+        var afterX = elbowX + (dx / length) * radius;
+        var afterY = start.y + (dy / length) * radius;
+
+        return "M " + start.x + " " + start.y +
+          " L " + beforeX + " " + start.y +
+          " Q " + elbowX + " " + start.y + " " + afterX + " " + afterY +
+          " L " + corner.x + " " + corner.y;
+      }
+
+      function draw() {
+        if (!wide.matches) {
+          svg.innerHTML = "";
+          return;
+        }
+
+        var rect = card.getBoundingClientRect();
+        var width = document.documentElement.clientWidth;
+        var height = document.documentElement.clientHeight;
+        svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+
+        var paths = [
+          elbow(pinPoint(".node-tl", "right"), { x: rect.left, y: rect.top }, 1),
+          elbow(pinPoint(".node-tr", "left"), { x: rect.right, y: rect.top }, -1),
+          elbow(pinPoint(".node-bl", "right"), { x: rect.left, y: rect.bottom }, 1),
+          elbow(pinPoint(".node-br", "left"), { x: rect.right, y: rect.bottom }, -1)
+        ];
+
+        svg.innerHTML = paths.map(function (d) {
+          return '<path d="' + d + '"></path>';
+        }).join("");
+      }
+
+      draw();
+      window.addEventListener("resize", draw);
+      wide.addEventListener("change", draw);
+
+      var toggle = document.getElementById("theme-toggle");
+      var label = toggle.querySelector(".theme-label");
+
+      function applyTheme(theme) {
+        var dark = theme === "dark";
+        document.documentElement.toggleAttribute("data-theme", dark);
+        if (dark) {
+          document.documentElement.setAttribute("data-theme", "dark");
+          localStorage.setItem("auth-theme", "dark");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+          localStorage.setItem("auth-theme", "light");
+        }
+        toggle.setAttribute("aria-pressed", dark ? "true" : "false");
+        label.textContent = dark ? "Light mode" : "Dark mode";
+      }
+
+      applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+      toggle.addEventListener("click", function () {
+        var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        applyTheme(next);
+      });
+
+    })();
+  </script>
+  <script src="../js/config.js?v=1.5.0"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/sign-in.js" defer></script>
+</body>
+
+</html>

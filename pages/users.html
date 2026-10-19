@@ -1,0 +1,786 @@
+<!--
+=========================================================
+* Soft UI Dashboard 3 - v1.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
+* Copyright 2024 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <script>
+    if (localStorage.getItem("auth-theme") === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.setAttribute("data-bs-theme", "dark");
+    }
+    if (localStorage.getItem("sidenav-type") === "bg-white") {
+      document.documentElement.setAttribute("data-sidenav", "solid");
+    }
+    var savedSidenavColor = localStorage.getItem("sidenav-color");
+    if (["primary", "dark", "info", "success", "warning", "danger"].indexOf(savedSidenavColor) !== -1) {
+      document.documentElement.setAttribute("data-sidenav-color", savedSidenavColor);
+    }
+    if (localStorage.getItem("navbar-fixed") === "true") {
+      document.documentElement.setAttribute("data-navbar", "fixed");
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <title>Users - Credentials Management System</title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,800" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- CSS Files -->
+  <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.1.0" rel="stylesheet" />
+  <link href="../assets/css/auth-theme.css?v=1.6.0" rel="stylesheet" />
+  <!-- Nepcha Analytics (nepcha.com) -->
+  <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+  </head>
+
+<body class="g-sidenav-show  bg-gray-100" data-page="users">
+  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-transparent" id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand cms-brand m-0" href="dashboard.html">
+        <img src="../assets/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
+        <span class="ms-2 font-weight-bold">Credentials Management System</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link " href="dashboard.html" >
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <title>Users - Credentials Management System</title>
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <g transform="translate(1716.000000, 291.000000)">
+                      <g transform="translate(0.000000, 148.000000)">
+                        <path class="color-background opacity-6" d="M46.7199583,10.7414583 L40.8449583,0.949791667 C40.4909749,0.360605034 39.8540131,0 39.1666667,0 L7.83333333,0 C7.1459869,0 6.50902508,0.360605034 6.15504167,0.949791667 L0.280041667,10.7414583 C0.0969176761,11.0460037 -1.23209662e-05,11.3946378 -1.23209662e-05,11.75 C-0.00758042603,16.0663731 3.48367543,19.5725301 7.80004167,19.5833333 L7.81570833,19.5833333 C9.75003686,19.5882688 11.6168794,18.8726691 13.0522917,17.5760417 C16.0171492,20.2556967 20.5292675,20.2556967 23.494125,17.5760417 C26.4604562,20.2616016 30.9794188,20.2616016 33.94575,17.5760417 C36.2421905,19.6477597 39.5441143,20.1708521 42.3684437,18.9103691 C45.1927731,17.649886 47.0084685,14.8428276 47.0000295,11.75 C47.0000295,11.3946378 46.9030823,11.0460037 46.7199583,10.7414583 Z"></path>
+                        <path class="color-background" d="M39.198,22.4912623 C37.3776246,22.4928106 35.5817531,22.0149171 33.951625,21.0951667 L33.92225,21.1107282 C31.1430221,22.6838032 27.9255001,22.9318916 24.9844167,21.7998837 C24.4750389,21.605469 23.9777983,21.3722567 23.4960833,21.1018359 L23.4745417,21.1129513 C20.6961809,22.6871153 17.4786145,22.9344611 14.5386667,21.7998837 C14.029926,21.6054643 13.533337,21.3722507 13.0522917,21.1018359 C11.4250962,22.0190609 9.63246555,22.4947009 7.81570833,22.4912623 C7.16510551,22.4842162 6.51607673,22.4173045 5.875,22.2911849 L5.875,44.7220845 C5.875,45.9498589 6.7517757,46.9451667 7.83333333,46.9451667 L19.5833333,46.9451667 L19.5833333,33.6066734 L27.4166667,33.6066734 L27.4166667,46.9451667 L39.1666667,46.9451667 C40.2482243,46.9451667 41.125,45.9498589 41.125,44.7220845 L41.125,22.2822926 C40.4887822,22.4116582 39.8442868,22.4815492 39.198,22.4912623 Z"></path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item requires-manage-systems">
+            <a class="nav-link " href="systems.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path class="color-background" d="M7.5 9a5.5 5.5 0 1 1 4.9 5.47L11 16h-2v2H7v2H3v-3.6l5.53-5.53A5.5 5.5 0 0 1 7.5 9z"></path>
+                  <circle class="color-background opacity-6" cx="16.5" cy="7.5" r="1.75"></circle>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">Credentials</span>
+            </a>
+          </li>
+        <li class="nav-item requires-view-audit-trail">
+            <a class="nav-link " href="audit-trail.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path class="color-background" d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path>
+                  <path class="color-background opacity-6" d="M14 3v6h6"></path>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">Systems audit trail</span>
+            </a>
+          </li>
+        <li class="nav-item requires-view-audit-trail">
+            <a class="nav-link " href="cms-audit-trail.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle class="color-background opacity-6" cx="12" cy="12" r="9"></circle>
+                  <path class="color-background" d="M11 7h2v5.2l3.1 1.8-1 1.7L11 13V7z"></path>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">CMS audit trail</span>
+            </a>
+          </li>
+        <li class="nav-item requires-manage-users">
+            <a class="nav-link active" href="users.html" aria-current="page">
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle class="color-background" cx="9" cy="7" r="4"></circle>
+                  <path class="color-background" d="M1 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1z"></path>
+                  <circle class="color-background opacity-6" cx="17.5" cy="8" r="3"></circle>
+                  <path class="color-background opacity-6" d="M18 21v-1a8.9 8.9 0 0 0-2.4-6.1A5.6 5.6 0 0 1 24 19v2z"></path>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">Users</span>
+            </a>
+          </li>
+        </ul>
+    </div>
+    <div class="sidenav-theme">
+      <button type="button" id="theme-toggle" class="sidenav-theme-btn" aria-pressed="false">
+        <svg class="theme-icon theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"></path></svg>
+        <svg class="theme-icon theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.9 4.9l1.4 1.4"></path><path d="M17.7 17.7l1.4 1.4"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M4.9 19.1l1.4-1.4"></path><path d="M17.7 6.3l1.4-1.4"></path></svg>
+        <span class="theme-label">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+      <div class="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Users</li>
+          </ol>
+          <h6 class="font-weight-bolder mb-0">Users</h6>
+        </nav>
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div class="navbar-search ms-md-3 pe-md-3 d-flex align-items-center flex-grow-1">
+            <div class="input-group">
+              <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+              <input type="search" id="global-search-input" class="form-control" data-global-search placeholder="Search pages and actions" autocomplete="off" spellcheck="false" aria-label="Search pages and actions">
+            </div>
+          </div>
+          <ul class="navbar-nav  justify-content-end">
+            <li class="nav-item d-flex align-items-center pe-3">
+              <button type="button" id="account-update-open" class="nav-link text-body font-weight-bold px-0 border-0 bg-transparent" aria-label="Update account">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"></path></svg>
+                  <span class="d-sm-inline d-none ms-1">Update account</span>
+                </button>
+            </li>
+            <li class="nav-item d-flex align-items-center">
+              <button type="button" id="sign-out" class="nav-link text-body font-weight-bold px-0 border-0 bg-transparent">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"></path><path d="M14 16l4-4-4-4"></path><path d="M18 12H9"></path></svg>
+                  <span class="d-sm-inline d-none ms-1">Sign Out</span>
+                </button>
+            </li>
+            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </a>
+            </li>
+            <li class="nav-item px-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0">
+                <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+              </a>
+            </li>
+            <li class="nav-item dropdown pe-2 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-bell cursor-pointer"></i>
+              </a>
+              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">New message</span> from Laur
+                        </h6>
+                        <p class="text-xs text-secondary mb-0 ">
+                          <i class="fa fa-clock me-1"></i>
+                          13 minutes ago
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">New album</span> by Travis Scott
+                        </h6>
+                        <p class="text-xs text-secondary mb-0 ">
+                          <i class="fa fa-clock me-1"></i>
+                          1 day
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                        <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                          <title>Users - Credentials Management System</title>
+                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                              <g transform="translate(1716.000000, 291.000000)">
+                                <g transform="translate(453.000000, 454.000000)">
+                                  <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
+                                  <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
+                                </g>
+                              </g>
+                            </g>
+                          </g>
+                        </svg>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          Payment successfully completed
+                        </h6>
+                        <p class="text-xs text-secondary mb-0 ">
+                          <i class="fa fa-clock me-1"></i>
+                          2 days
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+        <div class="card users-card" id="users-app"
+       data-list-url=""
+       data-base-url=""
+       data-sign-in-url="sign-in.html">
+    <div class="card-header p-4 pb-0">
+      <div class="users-header">
+        <div>
+          <h5 class="mb-1" id="users-heading" tabindex="-1">Registered users</h5>
+          <p class="text-sm text-secondary mb-0">View, update, disable, or remove CMS-PPA accounts.</p>
+        </div>
+        <a href="register.html" class="btn bg-gradient-primary mb-0">
+          <svg class="me-1" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Register user
+        </a>
+      </div>
+
+      <div class="users-toolbar">
+        <form class="users-search" id="users-search-form" role="search">
+          <label for="users-search" class="visually-hidden">Search users</label>
+          <svg class="users-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+          <input type="search" id="users-search" class="form-control" placeholder="Search by name, username, or email" maxlength="100" autocomplete="off" spellcheck="false">
+        </form>
+        <div class="users-filter" role="group" aria-label="Filter by account status">
+          <button type="button" class="users-filter-btn" data-status="all" aria-pressed="true">All <span class="users-filter-count" data-count="all"></span></button>
+          <button type="button" class="users-filter-btn" data-status="active" aria-pressed="false">Active <span class="users-filter-count" data-count="active"></span></button>
+          <button type="button" class="users-filter-btn" data-status="disabled" aria-pressed="false">Disabled <span class="users-filter-count" data-count="disabled"></span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body px-0 pt-3 pb-2">
+      <div class="px-4">
+        <div class="alert alert-success text-white text-sm users-feedback" id="users-success" role="status" tabindex="-1" hidden>
+          <span class="users-feedback-text"></span>
+          <button type="button" class="btn-close btn-close-white users-feedback-close" aria-label="Dismiss message"></button>
+        </div>
+        <div class="alert alert-danger text-white text-sm users-feedback" id="users-error" role="alert" tabindex="-1" hidden>
+          <span class="users-feedback-text"></span>
+          <button type="button" class="btn-close btn-close-white users-feedback-close" aria-label="Dismiss message"></button>
+        </div>
+      </div>
+
+      <p class="visually-hidden" id="users-live" aria-live="polite"></p>
+
+      <div class="users-state" id="users-loading">
+        <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
+        <p class="mb-0 text-sm">Loading users…</p>
+      </div>
+
+      <div class="users-state" id="users-empty" hidden>
+        <div class="users-state-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c1-3.2 3.5-5 6.5-5s5.5 1.8 6.5 5"></path><path d="M19 8v6M16 11h6"></path></svg>
+        </div>
+        <h6 class="mb-1">No users registered yet</h6>
+        <p class="text-sm text-secondary mb-3">Accounts you register will appear here.</p>
+        <a href="register.html" class="btn bg-gradient-primary btn-sm mb-0">Register a user</a>
+      </div>
+
+      <div class="users-state" id="users-no-match" hidden>
+        <div class="users-state-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        </div>
+        <h6 class="mb-1">No users match</h6>
+        <p class="text-sm text-secondary mb-3" id="users-no-match-text">Try a different search or filter.</p>
+        <button type="button" class="btn btn-outline-secondary btn-sm mb-0" id="users-clear">Clear search and filters</button>
+      </div>
+
+      <div class="users-state" id="users-load-error" hidden>
+        <div class="users-state-icon is-error" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5"></path><path d="M12 16.5v.01"></path></svg>
+        </div>
+        <h6 class="mb-1">Couldn't load users</h6>
+        <p class="text-sm text-secondary mb-3" id="users-load-error-text">Check your connection and try again.</p>
+        <button type="button" class="btn btn-outline-secondary btn-sm mb-0" id="users-retry">Try again</button>
+      </div>
+
+      <noscript>
+        <div class="users-state">
+          <p class="mb-0 text-sm">Turn on JavaScript to view and manage users.</p>
+        </div>
+      </noscript>
+
+      <div class="table-responsive users-table-wrap" id="users-table-wrap" hidden>
+        <table class="table align-items-center mb-0 users-table">
+          <caption class="visually-hidden">Registered user accounts</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder">Full name</th>
+              <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Username</th>
+              <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Email address</th>
+              <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Role</th>
+              <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Status</th>
+              <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Created</th>
+              <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-rows"></tbody>
+        </table>
+      </div>
+
+      <nav class="users-pagination" id="users-pagination" aria-label="User list pages" hidden>
+        <p class="text-sm text-secondary mb-0" id="users-range"></p>
+        <div class="users-pagination-buttons">
+          <button type="button" class="btn btn-outline-secondary btn-sm mb-0" id="users-prev">Previous</button>
+          <button type="button" class="btn btn-outline-secondary btn-sm mb-0" id="users-next">Next</button>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <template id="users-row-template">
+    <tr>
+      <td data-label="Full name">
+        <div class="d-flex align-items-center px-2 py-1">
+          <span class="users-avatar" aria-hidden="true" data-field="initial"></span>
+          <div class="min-width-0">
+            <h6 class="mb-0 text-sm users-name" data-field="name"></h6>
+            <span class="users-you" data-field="you" hidden>You</span>
+          </div>
+        </div>
+      </td>
+      <td data-label="Username"><span class="text-sm users-break" data-field="username"></span></td>
+      <td data-label="Email address"><span class="text-sm users-break users-email" data-field="email"></span></td>
+      <td data-label="Role"><span class="users-role" data-field="role"></span></td>
+      <td data-label="Status"><span class="users-status" data-field="status"></span></td>
+      <td data-label="Created"><time class="text-sm text-secondary" data-field="created"></time></td>
+      <td data-label="Actions" class="text-end pe-4">
+        <div class="users-actions">
+          <button type="button" class="btn btn-sm btn-outline-dark mb-0" data-action="edit">View / Update</button>
+          <button type="button" class="btn btn-sm btn-outline-dark mb-0" data-action="password">Reset password</button>
+          <button type="button" class="btn btn-sm btn-outline-warning mb-0" data-action="status">Disable</button>
+          <button type="button" class="btn btn-sm btn-outline-danger mb-0" data-action="remove">Remove</button>
+          <!-- <span class="text-xs text-secondary users-self-note" data-field="self-note" hidden>You can't disable or remove yourself.</span> -->
+        </div>
+      </td>
+    </tr>
+  </template>
+
+  <div class="modal fade" id="user-edit-modal" tabindex="-1" aria-labelledby="user-edit-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <form class="modal-content users-modal" id="user-edit-form" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="user-edit-title">User details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger text-white text-sm" id="user-edit-alert" role="alert" tabindex="-1" hidden></div>
+          <dl class="users-meta">
+            <div><dt>Status</dt><dd><span class="users-status" data-edit="status"></span></dd></div>
+            <div><dt>Created</dt><dd data-edit="created"></dd></div>
+            <div><dt>Last updated</dt><dd data-edit="updated"></dd></div>
+          </dl>
+          <fieldset id="user-edit-fields">
+            <legend class="visually-hidden">Account details</legend>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="edit-first_name">First name <span class="required-mark" aria-hidden="true">*</span></label>
+                <input type="text" id="edit-first_name" name="first_name" class="form-control" maxlength="50" autocomplete="off" required aria-required="true" aria-describedby="edit-first_name-error">
+                <div class="invalid-feedback" id="edit-first_name-error"></div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="edit-middle_name">Middle name</label>
+                <input type="text" id="edit-middle_name" name="middle_name" class="form-control" maxlength="50" autocomplete="off" aria-describedby="edit-middle_name-error">
+                <div class="invalid-feedback" id="edit-middle_name-error"></div>
+              </div>
+              <div class="col-md-8 mb-3">
+                <label class="form-label" for="edit-last_name">Last name <span class="required-mark" aria-hidden="true">*</span></label>
+                <input type="text" id="edit-last_name" name="last_name" class="form-control" maxlength="50" autocomplete="off" required aria-required="true" aria-describedby="edit-last_name-error">
+                <div class="invalid-feedback" id="edit-last_name-error"></div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="edit-suffix">Suffix</label>
+                <input type="text" id="edit-suffix" name="suffix" class="form-control" maxlength="10" autocomplete="off" aria-describedby="edit-suffix-hint edit-suffix-error">
+                <div class="invalid-feedback" id="edit-suffix-error"></div>
+                <div class="form-text" id="edit-suffix-hint">For example Jr., Sr., or III.</div>
+              </div>
+            </div>
+            <div class="alert alert-warning text-white text-sm" id="edit-name-split-note" hidden>
+              This account's name hasn't been split into first and last name yet. The fields above are a best guess from “<span data-edit="legacy-name"></span>”. Check them, and add a last name, before saving.
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="edit-email">Email address <span class="required-mark" aria-hidden="true">*</span></label>
+              <input type="email" id="edit-email" name="email" class="form-control" maxlength="255" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="email" required aria-required="true" aria-describedby="edit-email-error">
+              <div class="invalid-feedback" id="edit-email-error"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="edit-username">Username <span class="required-mark" aria-hidden="true">*</span></label>
+              <input type="text" id="edit-username" name="username" class="form-control" maxlength="50" autocomplete="off" autocapitalize="none" spellcheck="false" required aria-required="true" aria-describedby="edit-username-error edit-username-hint">
+              <div class="invalid-feedback" id="edit-username-error"></div>
+              <!-- <div class="form-text" id="edit-username-hint">Changing the username changes how this person signs in. Letters, numbers, dots, underscores, or hyphens.</div> -->
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="edit-role">Role <span class="required-mark" aria-hidden="true">*</span></label>
+              <select id="edit-role" name="role" class="form-select" required aria-required="true" aria-describedby="edit-role-hint edit-role-error">
+                <option value="user">User</option>
+                <option value="administrator">Administrator</option>
+              </select>
+              <div class="invalid-feedback" id="edit-role-error"></div>
+              <div class="form-text" id="edit-role-hint">Administrators can register and manage accounts.</div>
+            </div>
+          </fieldset>
+          <p class="text-xs text-secondary mb-0">Passwords are never shown. Use Reset password in the list to set a new one for a user.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary mb-0" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn bg-gradient-primary mb-0" data-busy-label="Saving…">
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true" hidden></span>
+            <span class="users-button-label">Save changes</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="user-password-modal" tabindex="-1" aria-labelledby="user-password-title" aria-describedby="user-password-effect" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form class="modal-content users-modal" id="user-password-form" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="user-password-title">Reset password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger text-white text-sm" id="user-password-alert" role="alert" tabindex="-1" hidden></div>
+          <div class="users-target">
+            <strong data-target="name"></strong>
+            <span class="text-sm text-secondary"><span data-target="username"></span> · <span data-target="email"></span></span>
+          </div>
+          <p class="text-sm" id="user-password-effect">The user is signed out everywhere and must sign in with the new password. Give it to them through a private channel, such as in person or by phone.</p>
+          <div class="mb-3">
+            <label class="form-label" for="reset-password">New password <span class="required-mark" aria-hidden="true">*</span></label>
+            <input type="password" id="reset-password" name="password" class="form-control" maxlength="255" autocomplete="new-password" required aria-required="true" aria-describedby="reset-password-error">
+            <div class="invalid-feedback" id="reset-password-error"></div>
+          </div>
+          <div class="mb-0">
+            <label class="form-label" for="reset-password_confirmation">Confirm new password <span class="required-mark" aria-hidden="true">*</span></label>
+            <input type="password" id="reset-password_confirmation" name="password_confirmation" class="form-control" maxlength="255" autocomplete="new-password" required aria-required="true" aria-describedby="reset-password_confirmation-error">
+            <div class="invalid-feedback" id="reset-password_confirmation-error"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary mb-0" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn bg-gradient-primary mb-0" data-busy-label="Saving…">
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true" hidden></span>
+            <span class="users-button-label">Set new password</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="user-status-modal" tabindex="-1" aria-labelledby="user-status-title" aria-describedby="user-status-effect" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form class="modal-content users-modal" id="user-status-form" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="user-status-title">Disable account?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger text-white text-sm" id="user-status-alert" role="alert" tabindex="-1" hidden></div>
+          <div class="users-target">
+            <strong data-target="name"></strong>
+            <span class="text-sm text-secondary"><span data-target="username"></span> · <span data-target="email"></span></span>
+          </div>
+          <p class="text-sm mb-0" id="user-status-effect"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary mb-0" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn mb-0" id="user-status-submit">
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true" hidden></span>
+            <span class="users-button-label">Disable account</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal fade" id="user-remove-modal" tabindex="-1" aria-labelledby="user-remove-title" aria-describedby="user-remove-effects" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <form class="modal-content users-modal" id="user-remove-form" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="user-remove-title">Remove account?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger text-white text-sm" id="user-remove-alert" role="alert" tabindex="-1" hidden></div>
+          <div class="users-target">
+            <strong data-target="name"></strong>
+            <span class="text-sm text-secondary"><span data-target="username"></span> · <span data-target="email"></span></span>
+          </div>
+          <div id="user-remove-effects">
+            <p class="text-sm mb-2">Removing this account permanently deletes it. This can't be undone.</p>
+            <ul class="text-sm users-effects">
+              <li>The user is signed out and can no longer sign in.</li>
+              <li>Their username and email address become available for new accounts.</li>
+              <li>Past activity already recorded in the system logs is kept.</li>
+            </ul>
+            <p class="text-sm text-secondary">If they might need access again, disable the account instead.</p>
+          </div>
+          <label class="form-label" for="remove-confirm">Type <strong data-target="username"></strong> to confirm</label>
+          <input type="text" id="remove-confirm" name="confirm_username" class="form-control" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="remove-confirm-error">
+          <div class="invalid-feedback" id="remove-confirm-error"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary mb-0" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn bg-gradient-danger mb-0" id="user-remove-submit" data-busy-label="Removing…" disabled>
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true" hidden></span>
+            <span class="users-button-label">Remove account</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+    </div>
+  </main>
+  <div class="fixed-plugin">
+    <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+      <i class="fa fa-cog py-2"> </i>
+    </a>
+    <div class="card shadow-lg ">
+      <div class="card-header pb-0 pt-3 ">
+        <div class="float-start">
+          <h5 class="mt-3 mb-0">Dashboard Configurator</h5>
+          <p>Dashboard Options</p>
+        </div>
+        <div class="float-end mt-4">
+          <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+            <i class="fa fa-close"></i>
+          </button>
+        </div>
+        <!-- End Toggle Button -->
+      </div>
+      <hr class="horizontal dark my-1">
+      <div class="card-body pt-sm-3 pt-0">
+        <!-- Sidebar Backgrounds -->
+        <div>
+          <h6 class="mb-0">Sidebar Colors</h6>
+        </div>
+        <a href="javascript:void(0)" class="switch-trigger background-color">
+          <div class="badge-colors my-2 text-start">
+            <span class="badge filter bg-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-dark" data-color="dark" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
+          </div>
+        </a>
+        <!-- Sidenav Type -->
+        <div class="mt-3">
+          <h6 class="mb-0">Sidenav Type</h6>
+          <p class="text-sm">Choose between 2 different sidenav types.</p>
+        </div>
+        <div class="d-flex">
+          <button class="btn btn-primary w-100 px-3 mb-2 active" data-class="bg-transparent" onclick="sidebarType(this)">Transparent</button>
+          <button class="btn btn-primary w-100 px-3 mb-2 ms-2" data-class="bg-white" onclick="sidebarType(this)">Solid</button>
+        </div>
+        <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
+        <!-- Navbar Fixed -->
+        <div class="mt-3">
+          <h6 class="mb-0">Navbar Fixed</h6>
+        </div>
+        <div class="form-check form-switch ps-0">
+          <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap.min.js"></script>
+  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+    <script src="../js/config.js?v=1.5.0"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/guard.js?v=1.0.1"></script>
+  <script src="../js/update-account.js" defer></script>
+  <script src="../js/users.js" defer></script>
+  <script src="../js/global-search.js?v=1.0.2" defer></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="../assets/js/soft-ui-dashboard.min.js?v=1.1.0"></script>
+  <script>
+    (function () {
+      function applySidenavType(type) {
+        var sidenav = document.getElementById("sidenav-main");
+        if (!sidenav) return;
+        var solid = type === "bg-white";
+        sidenav.classList.remove("bg-transparent", "bg-white");
+        sidenav.classList.add(solid ? "bg-white" : "bg-transparent");
+        if (solid) {
+          document.documentElement.setAttribute("data-sidenav", "solid");
+        } else {
+          document.documentElement.removeAttribute("data-sidenav");
+        }
+        document.querySelectorAll("#sidenav-main ~ .fixed-plugin [data-class], .fixed-plugin [data-class]").forEach(function (button) {
+          button.classList.toggle("active", button.getAttribute("data-class") === (solid ? "bg-white" : "bg-transparent"));
+        });
+      }
+
+      applySidenavType(localStorage.getItem("sidenav-type") === "bg-white" ? "bg-white" : "bg-transparent");
+
+      var originalSidebarType = window.sidebarType;
+      window.sidebarType = function (button) {
+        if (typeof originalSidebarType === "function") originalSidebarType(button);
+        var type = button.getAttribute("data-class");
+        if (type !== "bg-white" && type !== "bg-transparent") return;
+        localStorage.setItem("sidenav-type", type);
+        applySidenavType(type);
+      };
+
+      var sidenavColors = ["primary", "dark", "info", "success", "warning", "danger"];
+
+      function applySidebarColor(color) {
+        if (sidenavColors.indexOf(color) === -1) color = "primary";
+        var link = document.querySelector("#sidenav-main .nav-link.active");
+        if (link) {
+          sidenavColors.forEach(function (name) {
+            link.classList.remove("bg-gradient-" + name);
+          });
+          link.classList.add("bg-gradient-" + color);
+        }
+        document.documentElement.setAttribute("data-sidenav-color", color);
+        document.querySelectorAll(".fixed-plugin [data-color]").forEach(function (badge) {
+          badge.classList.toggle("active", badge.getAttribute("data-color") === color);
+        });
+      }
+
+      var savedSidenavColor = localStorage.getItem("sidenav-color");
+      if (sidenavColors.indexOf(savedSidenavColor) !== -1) {
+        applySidebarColor(savedSidenavColor);
+      }
+
+      var originalSidebarColor = window.sidebarColor;
+      window.sidebarColor = function (badge) {
+        if (typeof originalSidebarColor === "function") originalSidebarColor(badge);
+        var color = badge.getAttribute("data-color");
+        if (sidenavColors.indexOf(color) === -1) return;
+        localStorage.setItem("sidenav-color", color);
+        applySidebarColor(color);
+      };
+
+      var navbarFixedClasses = ["position-sticky", "blur", "shadow-blur", "mt-4", "left-auto", "top-1", "z-index-sticky"];
+
+      function applyNavbarFixed(fixed) {
+        var checkbox = document.getElementById("navbarFixed");
+        var navbar = document.getElementById("navbarBlur");
+        if (!navbar) return;
+        if (fixed) {
+          navbarFixedClasses.forEach(function (cls) {
+            navbar.classList.add(cls);
+          });
+          navbar.setAttribute("navbar-scroll", "true");
+          document.documentElement.setAttribute("data-navbar", "fixed");
+          if (checkbox) {
+            checkbox.setAttribute("checked", "true");
+            checkbox.checked = true;
+          }
+        } else {
+          navbarFixedClasses.forEach(function (cls) {
+            navbar.classList.remove(cls);
+          });
+          navbar.setAttribute("navbar-scroll", "false");
+          document.documentElement.removeAttribute("data-navbar");
+          if (checkbox) {
+            checkbox.removeAttribute("checked");
+            checkbox.checked = false;
+          }
+        }
+      }
+
+      applyNavbarFixed(localStorage.getItem("navbar-fixed") === "true");
+
+      var originalNavbarFixed = window.navbarFixed;
+      window.navbarFixed = function (el) {
+        if (typeof originalNavbarFixed === "function") originalNavbarFixed(el);
+        var fixed = !!el.getAttribute("checked");
+        localStorage.setItem("navbar-fixed", fixed ? "true" : "false");
+        applyNavbarFixed(fixed);
+      };
+
+      var themeToggle = document.getElementById("theme-toggle");
+      var themeLabel = themeToggle ? themeToggle.querySelector(".theme-label") : null;
+
+      function applyTheme(theme) {
+        var dark = theme === "dark";
+        if (dark) {
+          document.documentElement.setAttribute("data-theme", "dark");
+          document.documentElement.setAttribute("data-bs-theme", "dark");
+          localStorage.setItem("auth-theme", "dark");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+          document.documentElement.removeAttribute("data-bs-theme");
+          localStorage.setItem("auth-theme", "light");
+        }
+        if (themeToggle) themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
+        if (themeLabel) themeLabel.textContent = dark ? "Light mode" : "Dark mode";
+      }
+
+      applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+      if (themeToggle) {
+        themeToggle.addEventListener("click", function () {
+          var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          applyTheme(next);
+        });
+      }
+    })();
+  </script>
+</body>
+
+</html>
+

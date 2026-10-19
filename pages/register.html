@@ -1,0 +1,628 @@
+<!--
+=========================================================
+* Soft UI Dashboard 3 - v1.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
+* Copyright 2024 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <script>
+    if (localStorage.getItem("auth-theme") === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.setAttribute("data-bs-theme", "dark");
+    }
+    if (localStorage.getItem("sidenav-type") === "bg-white") {
+      document.documentElement.setAttribute("data-sidenav", "solid");
+    }
+    var savedSidenavColor = localStorage.getItem("sidenav-color");
+    if (["primary", "dark", "info", "success", "warning", "danger"].indexOf(savedSidenavColor) !== -1) {
+      document.documentElement.setAttribute("data-sidenav-color", savedSidenavColor);
+    }
+    if (localStorage.getItem("navbar-fixed") === "true") {
+      document.documentElement.setAttribute("data-navbar", "fixed");
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <title>Register User - Credentials Management System</title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,800" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- CSS Files -->
+  <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.1.0" rel="stylesheet" />
+  <link href="../assets/css/auth-theme.css?v=1.6.0" rel="stylesheet" />
+  <!-- Nepcha Analytics (nepcha.com) -->
+  <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+  </head>
+
+<body class="g-sidenav-show  bg-gray-100" data-page="register">
+  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-transparent" id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand cms-brand m-0" href="dashboard.html">
+        <img src="../assets/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
+        <span class="ms-2 font-weight-bold">Credentials Management System</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link " href="dashboard.html" >
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <title>Register User - Credentials Management System</title>
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <g transform="translate(1716.000000, 291.000000)">
+                      <g transform="translate(0.000000, 148.000000)">
+                        <path class="color-background opacity-6" d="M46.7199583,10.7414583 L40.8449583,0.949791667 C40.4909749,0.360605034 39.8540131,0 39.1666667,0 L7.83333333,0 C7.1459869,0 6.50902508,0.360605034 6.15504167,0.949791667 L0.280041667,10.7414583 C0.0969176761,11.0460037 -1.23209662e-05,11.3946378 -1.23209662e-05,11.75 C-0.00758042603,16.0663731 3.48367543,19.5725301 7.80004167,19.5833333 L7.81570833,19.5833333 C9.75003686,19.5882688 11.6168794,18.8726691 13.0522917,17.5760417 C16.0171492,20.2556967 20.5292675,20.2556967 23.494125,17.5760417 C26.4604562,20.2616016 30.9794188,20.2616016 33.94575,17.5760417 C36.2421905,19.6477597 39.5441143,20.1708521 42.3684437,18.9103691 C45.1927731,17.649886 47.0084685,14.8428276 47.0000295,11.75 C47.0000295,11.3946378 46.9030823,11.0460037 46.7199583,10.7414583 Z"></path>
+                        <path class="color-background" d="M39.198,22.4912623 C37.3776246,22.4928106 35.5817531,22.0149171 33.951625,21.0951667 L33.92225,21.1107282 C31.1430221,22.6838032 27.9255001,22.9318916 24.9844167,21.7998837 C24.4750389,21.605469 23.9777983,21.3722567 23.4960833,21.1018359 L23.4745417,21.1129513 C20.6961809,22.6871153 17.4786145,22.9344611 14.5386667,21.7998837 C14.029926,21.6054643 13.533337,21.3722507 13.0522917,21.1018359 C11.4250962,22.0190609 9.63246555,22.4947009 7.81570833,22.4912623 C7.16510551,22.4842162 6.51607673,22.4173045 5.875,22.2911849 L5.875,44.7220845 C5.875,45.9498589 6.7517757,46.9451667 7.83333333,46.9451667 L19.5833333,46.9451667 L19.5833333,33.6066734 L27.4166667,33.6066734 L27.4166667,46.9451667 L39.1666667,46.9451667 C40.2482243,46.9451667 41.125,45.9498589 41.125,44.7220845 L41.125,22.2822926 C40.4887822,22.4116582 39.8442868,22.4815492 39.198,22.4912623 Z"></path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item requires-manage-systems">
+            <a class="nav-link " href="systems.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path class="color-background" d="M7.5 9a5.5 5.5 0 1 1 4.9 5.47L11 16h-2v2H7v2H3v-3.6l5.53-5.53A5.5 5.5 0 0 1 7.5 9z"></path>
+                  <circle class="color-background opacity-6" cx="16.5" cy="7.5" r="1.75"></circle>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">Credentials</span>
+            </a>
+          </li>
+        <li class="nav-item requires-view-audit-trail">
+            <a class="nav-link " href="audit-trail.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path class="color-background" d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path>
+                  <path class="color-background opacity-6" d="M14 3v6h6"></path>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">Systems audit trail</span>
+            </a>
+          </li>
+        <li class="nav-item requires-view-audit-trail">
+            <a class="nav-link " href="cms-audit-trail.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle class="color-background opacity-6" cx="12" cy="12" r="9"></circle>
+                  <path class="color-background" d="M11 7h2v5.2l3.1 1.8-1 1.7L11 13V7z"></path>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">CMS audit trail</span>
+            </a>
+          </li>
+        <li class="nav-item requires-manage-users">
+            <a class="nav-link active" href="users.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle class="color-background" cx="9" cy="7" r="4"></circle>
+                  <path class="color-background" d="M1 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1z"></path>
+                  <circle class="color-background opacity-6" cx="17.5" cy="8" r="3"></circle>
+                  <path class="color-background opacity-6" d="M18 21v-1a8.9 8.9 0 0 0-2.4-6.1A5.6 5.6 0 0 1 24 19v2z"></path>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">Users</span>
+            </a>
+          </li>
+        </ul>
+    </div>
+    <div class="sidenav-theme">
+      <button type="button" id="theme-toggle" class="sidenav-theme-btn" aria-pressed="false">
+        <svg class="theme-icon theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"></path></svg>
+        <svg class="theme-icon theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.9 4.9l1.4 1.4"></path><path d="M17.7 17.7l1.4 1.4"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M4.9 19.1l1.4-1.4"></path><path d="M17.7 6.3l1.4-1.4"></path></svg>
+        <span class="theme-label">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+      <div class="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Register User</li>
+          </ol>
+          <h6 class="font-weight-bolder mb-0">Register User</h6>
+        </nav>
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div class="navbar-search ms-md-3 pe-md-3 d-flex align-items-center flex-grow-1">
+            <div class="input-group">
+              <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+              <input type="search" id="global-search-input" class="form-control" data-global-search placeholder="Search pages and actions" autocomplete="off" spellcheck="false" aria-label="Search pages and actions">
+            </div>
+          </div>
+          <ul class="navbar-nav  justify-content-end">
+            <li class="nav-item d-flex align-items-center pe-3">
+              <button type="button" id="account-update-open" class="nav-link text-body font-weight-bold px-0 border-0 bg-transparent" aria-label="Update account">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"></path></svg>
+                  <span class="d-sm-inline d-none ms-1">Update account</span>
+                </button>
+            </li>
+            <li class="nav-item d-flex align-items-center">
+              <button type="button" id="sign-out" class="nav-link text-body font-weight-bold px-0 border-0 bg-transparent">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"></path><path d="M14 16l4-4-4-4"></path><path d="M18 12H9"></path></svg>
+                  <span class="d-sm-inline d-none ms-1">Sign Out</span>
+                </button>
+            </li>
+            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </a>
+            </li>
+            <li class="nav-item px-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0">
+                <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+              </a>
+            </li>
+            <li class="nav-item dropdown pe-2 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-bell cursor-pointer"></i>
+              </a>
+              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">New message</span> from Laur
+                        </h6>
+                        <p class="text-xs text-secondary mb-0 ">
+                          <i class="fa fa-clock me-1"></i>
+                          13 minutes ago
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">New album</span> by Travis Scott
+                        </h6>
+                        <p class="text-xs text-secondary mb-0 ">
+                          <i class="fa fa-clock me-1"></i>
+                          1 day
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item border-radius-md" href="javascript:;">
+                    <div class="d-flex py-1">
+                      <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                        <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                          <title>Register User - Credentials Management System</title>
+                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                              <g transform="translate(1716.000000, 291.000000)">
+                                <g transform="translate(453.000000, 454.000000)">
+                                  <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
+                                  <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
+                                </g>
+                              </g>
+                            </g>
+                          </g>
+                        </svg>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          Payment successfully completed
+                        </h6>
+                        <p class="text-xs text-secondary mb-0 ">
+                          <i class="fa fa-clock me-1"></i>
+                          2 days
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+        <div class="row">
+    <div class="col-lg-8 col-12">
+      <div class="card register-card">
+        <div class="card-header pb-0 p-4">
+          <h5 class="mb-1">Register a user account</h5>
+          <p class="text-sm text-secondary mb-0">
+            Create sign-in details for someone who needs access to CMS-PPA.
+            Fields marked <span class="required-mark" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.
+          </p>
+        </div>
+        <div class="card-body p-4">
+          <div class="alert alert-danger text-white text-sm register-alert" id="register-alert" role="alert" tabindex="-1" hidden>
+            
+          </div>
+
+          <form id="register-user-form" method="post" action="#" data-sign-in-url="sign-in.html" novalidate >
+            <fieldset id="register-fields">
+              <legend class="visually-hidden">New account details</legend>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="first_name">First name <span class="required-mark" aria-hidden="true">*</span></label>
+                  <input type="text" id="first_name" name="first_name" class="form-control " value="" maxlength="50" autocomplete="off" required aria-required="true" aria-describedby="first_name-error" >
+                  <div class="invalid-feedback " id="first_name-error"></div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="middle_name">Middle name</label>
+                  <input type="text" id="middle_name" name="middle_name" class="form-control " value="" maxlength="50" autocomplete="off" aria-describedby="middle_name-error" >
+                  <div class="invalid-feedback " id="middle_name-error"></div>
+                </div>
+
+                <div class="col-md-8 mb-3">
+                  <label class="form-label" for="last_name">Last name <span class="required-mark" aria-hidden="true">*</span></label>
+                  <input type="text" id="last_name" name="last_name" class="form-control " value="" maxlength="50" autocomplete="off" required aria-required="true" aria-describedby="last_name-error" >
+                  <div class="invalid-feedback " id="last_name-error"></div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                  <label class="form-label" for="suffix">Suffix</label>
+                  <input type="text" id="suffix" name="suffix" class="form-control " value="" maxlength="10" autocomplete="off" aria-describedby="suffix-hint suffix-error" >
+                  <div class="invalid-feedback " id="suffix-error"></div>
+                  <div class="form-text" id="suffix-hint">For example Jr., Sr., or III.</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="email">Email address <span class="required-mark" aria-hidden="true">*</span></label>
+                  <input type="email" id="email" name="email" class="form-control " value="" maxlength="255" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="email" required aria-required="true" aria-describedby="email-hint email-error" >
+                  <div class="invalid-feedback " id="email-error"></div>
+                  <div class="form-text" id="email-hint">Each email address can belong to only one account.</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="username">Username <span class="required-mark" aria-hidden="true">*</span></label>
+                  <input type="text" id="username" name="username" class="form-control " value="" maxlength="50" autocomplete="off" autocapitalize="none" spellcheck="false" required aria-required="true" aria-describedby="username-hint username-error" >
+                  <div class="invalid-feedback " id="username-error"></div>
+                  <div class="form-text" id="username-hint">Used to sign in. 3–50 characters: letters, numbers, dots, underscores, or hyphens. Saved in lowercase.</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="role">Role <span class="required-mark" aria-hidden="true">*</span></label>
+                  <select id="role" name="role" class="form-select" required aria-required="true" aria-describedby="role-hint role-error">
+                    <option value="user" selected>User</option>
+                    <option value="administrator">Administrator</option>
+                  </select>
+                  <div class="invalid-feedback" id="role-error"></div>
+                  <div class="form-text" id="role-hint">Administrators can register and manage accounts. Only they can change their own password.</div>
+                </div>
+                <div class="w-100"></div>
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-label" for="password">Password <span class="required-mark" aria-hidden="true">*</span></label>
+                  <div class="password-field">
+                    <input type="password" id="password" name="password" class="form-control " maxlength="255" autocomplete="new-password" autocapitalize="none" spellcheck="false" required aria-required="true" aria-describedby="password-error" >
+                    <button type="button" class="password-toggle" data-password-toggle="password" aria-controls="password" aria-pressed="false" aria-label="Show password" title="Show password" hidden>
+                      <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.6 3.5"></path><path d="M6.6 6.6A17.6 17.6 0 0 0 2 12s3.6 7 10 7a9.9 9.9 0 0 0 5.4-1.6"></path><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path><path d="M3 3l18 18"></path></svg>
+                    </button>
+                  </div>
+                  <div class="invalid-feedback " id="password-error"></div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <label class="form-label" for="password_confirmation">Confirm password <span class="required-mark" aria-hidden="true">*</span></label>
+                  <div class="password-field">
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="form-control " maxlength="255" autocomplete="new-password" autocapitalize="none" spellcheck="false" required aria-required="true" aria-describedby="password_confirmation-error password_confirmation-match" >
+                    <button type="button" class="password-toggle" data-password-toggle="password_confirmation" aria-controls="password_confirmation" aria-pressed="false" aria-label="Show confirmation password" title="Show password" hidden>
+                      <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-2.6 3.5"></path><path d="M6.6 6.6A17.6 17.6 0 0 0 2 12s3.6 7 10 7a9.9 9.9 0 0 0 5.4-1.6"></path><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path><path d="M3 3l18 18"></path></svg>
+                    </button>
+                  </div>
+                  <div class="invalid-feedback " id="password_confirmation-error"></div>
+                  <div class="match-feedback" id="password_confirmation-match" hidden>Passwords match.</div>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="register-actions">
+              <a href="users.html" class="btn btn-outline-secondary mb-0">Cancel</a>
+              <button type="submit" class="btn bg-gradient-primary mb-0" id="register-submit">
+                <span class="spinner-border spinner-border-sm me-2" aria-hidden="true" hidden></span>
+                <span class="register-submit-label">Create account</span>
+              </button>
+            </div>
+          </form>
+
+          <section class="register-success" id="register-success" tabindex="-1" aria-labelledby="register-success-title" hidden>
+            <div class="register-success-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+            </div>
+            <h5 class="mb-1" id="register-success-title">Account created</h5>
+            <p class="text-sm text-secondary mb-3">
+              The account is active. The user can sign in with the username below and the password you set.
+            </p>
+            <dl class="register-summary">
+              <dt>Full name</dt>
+              <dd data-registered="name"></dd>
+              <dt>Email address</dt>
+              <dd data-registered="email"></dd>
+              <dt>Username</dt>
+              <dd data-registered="username"></dd>
+              <dt>Role</dt>
+              <dd data-registered="role"></dd>
+            </dl>
+            <h6 class="text-sm mt-4 mb-2">What to do next</h6>
+            <ol class="register-steps">
+              <li>Give the user their username and initial password through a private channel, such as in person or by phone. Don't send both in the same email or chat message.</li>
+              <li>Ask them to sign in at <a href="sign-in.html">sign-in.html</a>.</li>
+              <li>Delete any notes where you wrote the password down.</li>
+            </ol>
+            <div class="register-actions mt-4">
+              <a href="users.html" class="btn btn-outline-secondary mb-0">View all users</a>
+              <a href="register.html" class="btn bg-gradient-primary mb-0" id="register-again">Register another user</a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-12 mt-4 mt-lg-0">
+      <div class="card">
+        <div class="card-header pb-0 p-4">
+          <h6 class="mb-0">How registration works</h6>
+        </div>
+        <div class="card-body p-4 pt-3">
+          <ul class="register-notes">
+            <li>Only administrators create accounts. There is no public sign-up page.</li>
+            <li>Users sign in with their <strong>username</strong>, not their email address.</li>
+            <li>Usernames and email addresses must be unique. If one is already taken, you'll see a message next to that field.</li>
+            <li>You set the initial password. CMS-PPA can't display it after the account is created, so make sure you can pass it on to the user.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  </main>
+  <div class="fixed-plugin">
+    <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+      <i class="fa fa-cog py-2"> </i>
+    </a>
+    <div class="card shadow-lg ">
+      <div class="card-header pb-0 pt-3 ">
+        <div class="float-start">
+          <h5 class="mt-3 mb-0">Dashboard Configurator</h5>
+          <p>Dashboard Options</p>
+        </div>
+        <div class="float-end mt-4">
+          <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+            <i class="fa fa-close"></i>
+          </button>
+        </div>
+        <!-- End Toggle Button -->
+      </div>
+      <hr class="horizontal dark my-1">
+      <div class="card-body pt-sm-3 pt-0">
+        <!-- Sidebar Backgrounds -->
+        <div>
+          <h6 class="mb-0">Sidebar Colors</h6>
+        </div>
+        <a href="javascript:void(0)" class="switch-trigger background-color">
+          <div class="badge-colors my-2 text-start">
+            <span class="badge filter bg-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-dark" data-color="dark" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
+          </div>
+        </a>
+        <!-- Sidenav Type -->
+        <div class="mt-3">
+          <h6 class="mb-0">Sidenav Type</h6>
+          <p class="text-sm">Choose between 2 different sidenav types.</p>
+        </div>
+        <div class="d-flex">
+          <button class="btn btn-primary w-100 px-3 mb-2 active" data-class="bg-transparent" onclick="sidebarType(this)">Transparent</button>
+          <button class="btn btn-primary w-100 px-3 mb-2 ms-2" data-class="bg-white" onclick="sidebarType(this)">Solid</button>
+        </div>
+        <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
+        <!-- Navbar Fixed -->
+        <div class="mt-3">
+          <h6 class="mb-0">Navbar Fixed</h6>
+        </div>
+        <div class="form-check form-switch ps-0">
+          <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap.min.js"></script>
+  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+    <script src="../js/config.js?v=1.5.0"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/guard.js?v=1.0.1"></script>
+  <script src="../js/update-account.js" defer></script>
+  <script src="../js/register-user.js" defer></script>
+  <script src="../js/global-search.js?v=1.0.2" defer></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="../assets/js/soft-ui-dashboard.min.js?v=1.1.0"></script>
+  <script>
+    (function () {
+      function applySidenavType(type) {
+        var sidenav = document.getElementById("sidenav-main");
+        if (!sidenav) return;
+        var solid = type === "bg-white";
+        sidenav.classList.remove("bg-transparent", "bg-white");
+        sidenav.classList.add(solid ? "bg-white" : "bg-transparent");
+        if (solid) {
+          document.documentElement.setAttribute("data-sidenav", "solid");
+        } else {
+          document.documentElement.removeAttribute("data-sidenav");
+        }
+        document.querySelectorAll("#sidenav-main ~ .fixed-plugin [data-class], .fixed-plugin [data-class]").forEach(function (button) {
+          button.classList.toggle("active", button.getAttribute("data-class") === (solid ? "bg-white" : "bg-transparent"));
+        });
+      }
+
+      applySidenavType(localStorage.getItem("sidenav-type") === "bg-white" ? "bg-white" : "bg-transparent");
+
+      var originalSidebarType = window.sidebarType;
+      window.sidebarType = function (button) {
+        if (typeof originalSidebarType === "function") originalSidebarType(button);
+        var type = button.getAttribute("data-class");
+        if (type !== "bg-white" && type !== "bg-transparent") return;
+        localStorage.setItem("sidenav-type", type);
+        applySidenavType(type);
+      };
+
+      var sidenavColors = ["primary", "dark", "info", "success", "warning", "danger"];
+
+      function applySidebarColor(color) {
+        if (sidenavColors.indexOf(color) === -1) color = "primary";
+        var link = document.querySelector("#sidenav-main .nav-link.active");
+        if (link) {
+          sidenavColors.forEach(function (name) {
+            link.classList.remove("bg-gradient-" + name);
+          });
+          link.classList.add("bg-gradient-" + color);
+        }
+        document.documentElement.setAttribute("data-sidenav-color", color);
+        document.querySelectorAll(".fixed-plugin [data-color]").forEach(function (badge) {
+          badge.classList.toggle("active", badge.getAttribute("data-color") === color);
+        });
+      }
+
+      var savedSidenavColor = localStorage.getItem("sidenav-color");
+      if (sidenavColors.indexOf(savedSidenavColor) !== -1) {
+        applySidebarColor(savedSidenavColor);
+      }
+
+      var originalSidebarColor = window.sidebarColor;
+      window.sidebarColor = function (badge) {
+        if (typeof originalSidebarColor === "function") originalSidebarColor(badge);
+        var color = badge.getAttribute("data-color");
+        if (sidenavColors.indexOf(color) === -1) return;
+        localStorage.setItem("sidenav-color", color);
+        applySidebarColor(color);
+      };
+
+      var navbarFixedClasses = ["position-sticky", "blur", "shadow-blur", "mt-4", "left-auto", "top-1", "z-index-sticky"];
+
+      function applyNavbarFixed(fixed) {
+        var checkbox = document.getElementById("navbarFixed");
+        var navbar = document.getElementById("navbarBlur");
+        if (!navbar) return;
+        if (fixed) {
+          navbarFixedClasses.forEach(function (cls) {
+            navbar.classList.add(cls);
+          });
+          navbar.setAttribute("navbar-scroll", "true");
+          document.documentElement.setAttribute("data-navbar", "fixed");
+          if (checkbox) {
+            checkbox.setAttribute("checked", "true");
+            checkbox.checked = true;
+          }
+        } else {
+          navbarFixedClasses.forEach(function (cls) {
+            navbar.classList.remove(cls);
+          });
+          navbar.setAttribute("navbar-scroll", "false");
+          document.documentElement.removeAttribute("data-navbar");
+          if (checkbox) {
+            checkbox.removeAttribute("checked");
+            checkbox.checked = false;
+          }
+        }
+      }
+
+      applyNavbarFixed(localStorage.getItem("navbar-fixed") === "true");
+
+      var originalNavbarFixed = window.navbarFixed;
+      window.navbarFixed = function (el) {
+        if (typeof originalNavbarFixed === "function") originalNavbarFixed(el);
+        var fixed = !!el.getAttribute("checked");
+        localStorage.setItem("navbar-fixed", fixed ? "true" : "false");
+        applyNavbarFixed(fixed);
+      };
+
+      var themeToggle = document.getElementById("theme-toggle");
+      var themeLabel = themeToggle ? themeToggle.querySelector(".theme-label") : null;
+
+      function applyTheme(theme) {
+        var dark = theme === "dark";
+        if (dark) {
+          document.documentElement.setAttribute("data-theme", "dark");
+          document.documentElement.setAttribute("data-bs-theme", "dark");
+          localStorage.setItem("auth-theme", "dark");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+          document.documentElement.removeAttribute("data-bs-theme");
+          localStorage.setItem("auth-theme", "light");
+        }
+        if (themeToggle) themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
+        if (themeLabel) themeLabel.textContent = dark ? "Light mode" : "Dark mode";
+      }
+
+      applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+      if (themeToggle) {
+        themeToggle.addEventListener("click", function () {
+          var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          applyTheme(next);
+        });
+      }
+    })();
+  </script>
+</body>
+
+</html>
+

@@ -1,0 +1,802 @@
+<!--
+=========================================================
+* Soft UI Dashboard 3 - v1.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
+* Copyright 2024 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <script>
+    if (localStorage.getItem("auth-theme") === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.setAttribute("data-bs-theme", "dark");
+    }
+    if (localStorage.getItem("sidenav-type") === "bg-white") {
+      document.documentElement.setAttribute("data-sidenav", "solid");
+    }
+    var savedSidenavColor = localStorage.getItem("sidenav-color");
+    if (["primary", "dark", "info", "success", "warning", "danger"].indexOf(savedSidenavColor) !== -1) {
+      document.documentElement.setAttribute("data-sidenav-color", savedSidenavColor);
+    }
+    if (localStorage.getItem("navbar-fixed") === "true") {
+      document.documentElement.setAttribute("data-navbar", "fixed");
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <title>Dashboard - Credentials Management System</title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,800" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- CSS Files -->
+  <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.1.0" rel="stylesheet" />
+  <link href="../assets/css/auth-theme.css?v=1.6.0" rel="stylesheet" />
+  <!-- Nepcha Analytics (nepcha.com) -->
+  <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+  </head>
+
+<body class="g-sidenav-show  bg-gray-100" data-page="dashboard">
+  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-transparent" id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand cms-brand m-0" href="dashboard.html">
+        <img src="../assets/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
+        <span class="ms-2 font-weight-bold">Credentials Management System</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" href="dashboard.html" aria-current="page">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+              <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <title>Dashboard - Credentials Management System</title>
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g transform="translate(-1716.000000, -439.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <g transform="translate(1716.000000, 291.000000)">
+                      <g transform="translate(0.000000, 148.000000)">
+                        <path class="color-background opacity-6" d="M46.7199583,10.7414583 L40.8449583,0.949791667 C40.4909749,0.360605034 39.8540131,0 39.1666667,0 L7.83333333,0 C7.1459869,0 6.50902508,0.360605034 6.15504167,0.949791667 L0.280041667,10.7414583 C0.0969176761,11.0460037 -1.23209662e-05,11.3946378 -1.23209662e-05,11.75 C-0.00758042603,16.0663731 3.48367543,19.5725301 7.80004167,19.5833333 L7.81570833,19.5833333 C9.75003686,19.5882688 11.6168794,18.8726691 13.0522917,17.5760417 C16.0171492,20.2556967 20.5292675,20.2556967 23.494125,17.5760417 C26.4604562,20.2616016 30.9794188,20.2616016 33.94575,17.5760417 C36.2421905,19.6477597 39.5441143,20.1708521 42.3684437,18.9103691 C45.1927731,17.649886 47.0084685,14.8428276 47.0000295,11.75 C47.0000295,11.3946378 46.9030823,11.0460037 46.7199583,10.7414583 Z"></path>
+                        <path class="color-background" d="M39.198,22.4912623 C37.3776246,22.4928106 35.5817531,22.0149171 33.951625,21.0951667 L33.92225,21.1107282 C31.1430221,22.6838032 27.9255001,22.9318916 24.9844167,21.7998837 C24.4750389,21.605469 23.9777983,21.3722567 23.4960833,21.1018359 L23.4745417,21.1129513 C20.6961809,22.6871153 17.4786145,22.9344611 14.5386667,21.7998837 C14.029926,21.6054643 13.533337,21.3722507 13.0522917,21.1018359 C11.4250962,22.0190609 9.63246555,22.4947009 7.81570833,22.4912623 C7.16510551,22.4842162 6.51607673,22.4173045 5.875,22.2911849 L5.875,44.7220845 C5.875,45.9498589 6.7517757,46.9451667 7.83333333,46.9451667 L19.5833333,46.9451667 L19.5833333,33.6066734 L27.4166667,33.6066734 L27.4166667,46.9451667 L39.1666667,46.9451667 C40.2482243,46.9451667 41.125,45.9498589 41.125,44.7220845 L41.125,22.2822926 C40.4887822,22.4116582 39.8442868,22.4815492 39.198,22.4912623 Z"></path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <span class="nav-link-text ms-1">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item requires-manage-systems">
+            <a class="nav-link " href="systems.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path class="color-background" d="M7.5 9a5.5 5.5 0 1 1 4.9 5.47L11 16h-2v2H7v2H3v-3.6l5.53-5.53A5.5 5.5 0 0 1 7.5 9z"></path>
+                  <circle class="color-background opacity-6" cx="16.5" cy="7.5" r="1.75"></circle>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">Credentials</span>
+            </a>
+          </li>
+        <li class="nav-item requires-view-audit-trail">
+            <a class="nav-link " href="audit-trail.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path class="color-background" d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path>
+                  <path class="color-background opacity-6" d="M14 3v6h6"></path>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">Systems audit trail</span>
+            </a>
+          </li>
+        <li class="nav-item requires-view-audit-trail">
+            <a class="nav-link " href="cms-audit-trail.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle class="color-background opacity-6" cx="12" cy="12" r="9"></circle>
+                  <path class="color-background" d="M11 7h2v5.2l3.1 1.8-1 1.7L11 13V7z"></path>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">CMS audit trail</span>
+            </a>
+          </li>
+        <li class="nav-item requires-manage-users">
+            <a class="nav-link " href="users.html" >
+              <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <svg width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle class="color-background" cx="9" cy="7" r="4"></circle>
+                  <path class="color-background" d="M1 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1z"></path>
+                  <circle class="color-background opacity-6" cx="17.5" cy="8" r="3"></circle>
+                  <path class="color-background opacity-6" d="M18 21v-1a8.9 8.9 0 0 0-2.4-6.1A5.6 5.6 0 0 1 24 19v2z"></path>
+                </svg>
+              </div>
+              <span class="nav-link-text ms-1">Users</span>
+            </a>
+          </li>
+        </ul>
+    </div>
+    <div class="sidenav-theme">
+      <button type="button" id="theme-toggle" class="sidenav-theme-btn" aria-pressed="false">
+        <svg class="theme-icon theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"></path></svg>
+        <svg class="theme-icon theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.9 4.9l1.4 1.4"></path><path d="M17.7 17.7l1.4 1.4"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M4.9 19.1l1.4-1.4"></path><path d="M17.7 6.3l1.4-1.4"></path></svg>
+        <span class="theme-label">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+      <div class="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
+          </ol>
+          <h6 class="font-weight-bolder mb-0">Dashboard</h6>
+        </nav>
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div class="navbar-search ms-md-3 pe-md-3 d-flex align-items-center flex-grow-1">
+            <div class="input-group">
+              <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+              <input type="search" id="global-search-input" class="form-control" data-global-search placeholder="Search pages and actions" autocomplete="off" spellcheck="false" aria-label="Search pages and actions">
+            </div>
+          </div>
+          <ul class="navbar-nav  justify-content-end">
+            <li class="nav-item d-flex align-items-center pe-3">
+              <button type="button" id="account-update-open" class="nav-link text-body font-weight-bold px-0 border-0 bg-transparent" aria-label="Update account">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"></path></svg>
+                  <span class="d-sm-inline d-none ms-1">Update account</span>
+                </button>
+            </li>
+            <li class="nav-item d-flex align-items-center">
+              <button type="button" id="sign-out" class="nav-link text-body font-weight-bold px-0 border-0 bg-transparent">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"></path><path d="M14 16l4-4-4-4"></path><path d="M18 12H9"></path></svg>
+                  <span class="d-sm-inline d-none ms-1">Sign Out</span>
+                </button>
+            </li>
+            <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </a>
+            </li>
+            <li class="nav-item px-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0">
+                <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+              </a>
+            </li>
+            <li class="nav-item pe-2 d-flex align-items-center">
+              <button type="button" class="nav-link text-body p-0 border-0 bg-transparent notifications-bell" id="notifications-bell" aria-controls="notifications" aria-describedby="notifications-bell-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+                <span class="visually-hidden">Notifications</span>
+                <span class="notifications-bell-badge" id="notifications-bell-badge" hidden></span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+            <div class="row">
+        <div class="col-lg-6 col-12 d-flex">
+          <div class="card shadow h-100 w-100 welcome-card">
+            <div class="card-body p-4 d-flex flex-column">
+              <div class="d-flex align-items-start justify-content-between">
+                <p class="welcome-kicker mb-0" id="welcome-date">Today</p>
+                <div class="welcome-avatar" id="welcome-initial" aria-hidden="true"></div>
+              </div>
+              <div class="pt-3 pb-4">
+                <p class="welcome-hello mb-2">Hello, Welcome Back!</p>
+                <h3 class="welcome-name font-weight-bolder mb-3" id="welcome-name"></h3>
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                  <span class="welcome-pill"><span class="welcome-dot"></span>Signed in</span>
+                  <button type="button" class="welcome-pill notifications-unread-pill" id="notifications-unread-pill" aria-controls="notifications" hidden></button>
+                </div>
+              </div>
+              <section class="notifications-panel mt-auto" id="notifications" aria-labelledby="notifications-title" aria-busy="true">
+                <div class="notifications-header">
+                  <h6 class="mb-0" id="notifications-title" tabindex="-1">Notifications</h6>
+                  <button type="button" class="btn btn-link btn-sm mb-0 p-0 notifications-mark-all" id="notifications-mark-all" hidden>Mark all as read</button>
+                </div>
+                <p class="visually-hidden" id="notifications-live" aria-live="polite"></p>
+                <p class="dashboard-refresh-warning text-xs mb-2" id="notifications-refresh-error" role="status" hidden></p>
+
+                <div class="notifications-state" id="notifications-loading">
+                  <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
+                  <span class="text-sm">Loading notifications…</span>
+                </div>
+
+                <div class="notifications-state" id="notifications-empty" hidden>
+                  <span class="text-sm">You're all caught up. Website status changes appear here automatically.</span>
+                </div>
+
+                <div class="notifications-state is-error" id="notifications-error" hidden>
+                  <span class="text-sm" id="notifications-error-text">Couldn't load notifications.</span>
+                  <button type="button" class="btn btn-outline-secondary btn-sm mb-0" id="notifications-retry">Try again</button>
+                </div>
+
+                <ul class="notifications-list list-unstyled mb-0" id="notifications-list" hidden></ul>
+              </section>
+            </div>
+          </div>
+          <template id="notification-item">
+            <li>
+              <button type="button" class="notification-item" data-field="button">
+                <span class="notification-icon" aria-hidden="true">
+                  <svg data-icon="down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg>
+                  <svg data-icon="recovered" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.5 2.5L16 9.5"></path></svg>
+                  <svg data-icon="credentials" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 9a5.5 5.5 0 1 1 4.9 5.47L11 16h-2v2H7v2H3v-3.6l5.53-5.53A5.5 5.5 0 0 1 7.5 9z"></path></svg>
+                  <svg data-icon="account" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 19.2c1.2-2.6 3.5-3.9 6.5-3.9s5.3 1.3 6.5 3.9"></path></svg>
+                </span>
+                <span class="notification-body">
+                  <span class="notification-title" data-field="title"></span>
+                  <span class="notification-message" data-field="message"></span>
+                  <time class="notification-time" data-field="time"></time>
+                </span>
+                <span class="notification-dot" data-field="dot"></span>
+                <span class="visually-hidden" data-field="state"></span>
+              </button>
+            </li>
+          </template>
+        </div>
+        <div class="col-lg-6 col-12 mt-4 mt-lg-0 d-flex">
+          <div class="card shadow h-100 w-100">
+            <div class="card-body p-3 d-flex flex-column">
+              <div class="bg-dark border-radius-md py-3 pe-1 mb-3 flex-grow-1">
+                <div class="chart h-100">
+                  <canvas id="logged-in-chart" class="chart-canvas" height="170"></canvas>
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-between ms-2">
+                <div class="d-flex align-items-center">
+                  <div class="icon icon-shape icon-sm shadow border-radius-sm bg-primary text-center me-2 d-flex align-items-center justify-content-center">
+                    <svg width="12px" height="12px" viewBox="0 0 40 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                      <title>Logged in users</title>
+                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g transform="translate(-1870.000000, -591.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                          <g transform="translate(1716.000000, 291.000000)">
+                            <g transform="translate(154.000000, 300.000000)">
+                              <path class="color-background" d="M40,40 L36.3636364,40 L36.3636364,3.63636364 L5.45454545,3.63636364 L5.45454545,0 L38.1818182,0 C39.1854545,0 40,0.814545455 40,1.81818182 L40,40 Z" opacity="0.603585379"></path>
+                              <path class="color-background" d="M30.9090909,7.27272727 L1.81818182,7.27272727 C0.814545455,7.27272727 0,8.08727273 0,9.09090909 L0,41.8181818 C0,42.8218182 0.814545455,43.6363636 1.81818182,43.6363636 L30.9090909,43.6363636 C31.9127273,43.6363636 32.7272727,42.8218182 32.7272727,41.8181818 L32.7272727,9.09090909 C32.7272727,8.08727273 31.9127273,7.27272727 30.9090909,7.27272727 Z M18.1818182,34.5454545 L7.27272727,34.5454545 L7.27272727,30.9090909 L18.1818182,30.9090909 L18.1818182,34.5454545 Z M25.4545455,27.2727273 L7.27272727,27.2727273 L7.27272727,23.6363636 L25.4545455,23.6363636 L25.4545455,27.2727273 Z M25.4545455,20 L7.27272727,20 L7.27272727,16.3636364 L25.4545455,16.3636364 L25.4545455,20 Z"></path>
+                            </g>
+                          </g>
+                        </g>
+                      </g>
+                    </svg>
+                  </div>
+                  <h6 class="mb-0">Logged In Users</h6>
+                </div>
+                <div class="chart-toggle" role="group" aria-label="Chart type">
+                  <button type="button" class="chart-toggle-btn is-active" data-chart-type="bar" aria-pressed="true" title="Bar chart">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 20V10"></path><path d="M12 20V4"></path><path d="M19 20v-7"></path></svg>
+                  </button>
+                  <button type="button" class="chart-toggle-btn" data-chart-type="line" aria-pressed="false" title="Line chart">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l5-5 4 3 7-8"></path><path d="M15 6h5v5"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row my-4">
+        <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
+          <div class="card" id="dashboard-systems" aria-busy="true">
+            <div class="card-header pb-0">
+              <div class="row">
+                <div class="col-lg-7 col-7">
+                  <h6>Systems</h6>
+                  <p class="text-sm mb-0" id="dashboard-systems-summary">Production systems inside PPA</p>
+                </div>
+                <div class="col-lg-5 col-5 my-auto text-end">
+                  <p class="text-xs text-secondary mb-0 pe-2" id="dashboard-systems-updated"></p>
+                </div>
+              </div>
+              <!-- <p class="dashboard-widget-note text-xs mt-2 mb-0">Status shows whether each system's web address answered the last check. It doesn't confirm the system is working correctly.</p> -->
+            </div>
+            <div class="card-body px-0 pb-2">
+              <p class="visually-hidden" id="dashboard-systems-live" aria-live="polite"></p>
+              <p class="dashboard-refresh-warning text-xs mx-3 mb-2" id="dashboard-systems-refresh-error" role="status" hidden></p>
+
+              <div class="users-state py-4" id="dashboard-systems-loading">
+                <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
+                <p class="mb-0 text-sm">Loading systems…</p>
+              </div>
+
+              <div class="users-state py-4" id="dashboard-systems-empty" hidden>
+                <div class="users-state-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg>
+                </div>
+                <h6 class="mb-1">No production systems configured</h6>
+                <p class="text-sm text-secondary mb-0">An administrator can set a system's environment to Production on the Credentials page to monitor it here.</p>
+              </div>
+
+              <div class="users-state py-4" id="dashboard-systems-error" hidden>
+                <div class="users-state-icon is-error" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5"></path><path d="M12 16.5v.01"></path></svg>
+                </div>
+                <h6 class="mb-1">Couldn't load systems</h6>
+                <p class="text-sm text-secondary mb-3" id="dashboard-systems-error-text">Check your connection and try again.</p>
+                <button type="button" class="btn btn-outline-secondary btn-sm mb-0" id="dashboard-systems-retry">Try again</button>
+              </div>
+
+              <div class="table-responsive systems-table-scroll" id="dashboard-systems-table" hidden>
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder">Systems</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Domain Name</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">IP Address</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder ps-2">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-systems-rows">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <template id="dashboard-system-row">
+            <tr>
+              <td>
+                <div class="d-flex px-2 py-1 align-items-center">
+                  <span class="system-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path><path d="M12 16v4"></path></svg></span>
+                  <h6 class="mb-0 text-sm dashboard-system-name" data-field="name"></h6>
+                </div>
+              </td>
+              <td class="align-middle"><span class="text-xs font-weight-bold dashboard-address" data-field="domain"></span></td>
+              <td class="align-middle"><span class="text-xs font-weight-bold dashboard-address systems-mono" data-field="ip"></span></td>
+              <td class="align-middle" data-field="status-cell">
+                <span class="dashboard-status" data-field="status"></span>
+                <span class="dashboard-status is-stale" data-field="stale" hidden>Stale</span>
+                <span class="d-block text-xs text-secondary mt-1" data-field="checked"></span>
+                <span class="d-block text-xxs text-secondary dashboard-status-detail" data-field="detail"></span>
+              </td>
+            </tr>
+          </template>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <template id="dashboard-sign-in-item">
+            <div class="timeline-block mb-3">
+              <span class="timeline-step">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 19.2c1.2-2.6 3.5-3.9 6.5-3.9s5.3 1.3 6.5 3.9"></path></svg>
+              </span>
+              <div class="timeline-content">
+                <h6 class="text-dark text-sm font-weight-bold mb-0" data-field="name"></h6>
+                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0"><time data-field="time"></time></p>
+              </div>
+            </div>
+          </template>
+          <div class="card h-100" id="dashboard-sign-ins" aria-busy="true">
+            <div class="card-header pb-0">
+              <h6>Logged In Users</h6>
+              <p class="text-sm mb-0">Recent sign-ins to CMS-PPA</p>
+              <p class="dashboard-widget-note text-xs mt-1 mb-0">Sign-in history, not who is online right now. <span id="dashboard-sign-ins-timezone"></span></p>
+            </div>
+            <div class="card-body p-3">
+              <p class="visually-hidden" id="dashboard-sign-ins-live" aria-live="polite"></p>
+              <p class="dashboard-refresh-warning text-xs mb-2" id="dashboard-sign-ins-refresh-error" role="status" hidden></p>
+
+              <div class="users-state py-4" id="dashboard-sign-ins-loading">
+                <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
+                <p class="mb-0 text-sm">Loading sign-ins…</p>
+              </div>
+
+              <div class="users-state py-4" id="dashboard-sign-ins-empty" hidden>
+                <div class="users-state-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 19.2c1.2-2.6 3.5-3.9 6.5-3.9s5.3 1.3 6.5 3.9"></path></svg>
+                </div>
+                <h6 class="mb-1">No sign-ins recorded yet</h6>
+                <p class="text-sm text-secondary mb-0">Each successful sign-in will appear here within a minute.</p>
+              </div>
+
+              <div class="users-state py-4" id="dashboard-sign-ins-forbidden" hidden>
+                <div class="users-state-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+                </div>
+                <h6 class="mb-1">Administrators only</h6>
+                <p class="text-sm text-secondary mb-0">Only administrators can see who has signed in.</p>
+              </div>
+
+              <div class="users-state py-4" id="dashboard-sign-ins-error" hidden>
+                <div class="users-state-icon is-error" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5"></path><path d="M12 16.5v.01"></path></svg>
+                </div>
+                <h6 class="mb-1">Couldn't load sign-ins</h6>
+                <p class="text-sm text-secondary mb-3" id="dashboard-sign-ins-error-text">Check your connection and try again.</p>
+                <button type="button" class="btn btn-outline-secondary btn-sm mb-0" id="dashboard-sign-ins-retry">Try again</button>
+              </div>
+
+              <div class="timeline timeline-one-side" id="dashboard-sign-ins-list" hidden>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="notification-modal" tabindex="-1" aria-labelledby="notification-modal-title" aria-describedby="notification-modal-message" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content users-modal">
+          <div class="modal-header">
+            <h5 class="modal-title" id="notification-modal-title"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-xs text-secondary mb-2">
+              <span class="notification-category" id="notification-modal-category"></span>
+              <time id="notification-modal-time"></time>
+            </p>
+            <p class="text-sm mb-3" id="notification-modal-message"></p>
+            <dl class="notification-details mb-3" id="notification-modal-details"></dl>
+            <p class="text-xs mb-0 notification-read-status" id="notification-modal-read-status" role="status"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary mb-0" data-bs-dismiss="modal">Close</button>
+            <a class="btn bg-gradient-dark mb-0" id="notification-modal-action" hidden></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3 systems-toast-container" id="notification-toast-container">
+      <div class="toast systems-toast" id="notification-toast" aria-labelledby="notification-toast-title">
+        <div class="toast-header">
+          <span class="systems-remote-tag is-ssh">New</span>
+          <strong class="me-auto ms-2 text-sm" id="notification-toast-title"></strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          <p class="text-sm mb-2 systems-toast-message" id="notification-toast-message"></p>
+          <div class="systems-toast-actions">
+            <button type="button" class="btn btn-sm btn-outline-dark mb-0" id="notification-toast-view">View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div class="fixed-plugin">
+    <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+      <i class="fa fa-cog py-2"> </i>
+    </a>
+    <div class="card shadow-lg ">
+      <div class="card-header pb-0 pt-3 ">
+        <div class="float-start">
+          <h5 class="mt-3 mb-0">Dashboard Configurator</h5>
+          <p>Dashboard Options</p>
+        </div>
+        <div class="float-end mt-4">
+          <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+            <i class="fa fa-close"></i>
+          </button>
+        </div>
+        <!-- End Toggle Button -->
+      </div>
+      <hr class="horizontal dark my-1">
+      <div class="card-body pt-sm-3 pt-0">
+        <!-- Sidebar Backgrounds -->
+        <div>
+          <h6 class="mb-0">Sidebar Colors</h6>
+        </div>
+        <a href="javascript:void(0)" class="switch-trigger background-color">
+          <div class="badge-colors my-2 text-start">
+            <span class="badge filter bg-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-dark" data-color="dark" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
+          </div>
+        </a>
+        <!-- Sidenav Type -->
+        <div class="mt-3">
+          <h6 class="mb-0">Sidenav Type</h6>
+          <p class="text-sm">Choose between 2 different sidenav types.</p>
+        </div>
+        <div class="d-flex">
+          <button class="btn btn-primary w-100 px-3 mb-2 active" data-class="bg-transparent" onclick="sidebarType(this)">Transparent</button>
+          <button class="btn btn-primary w-100 px-3 mb-2 ms-2" data-class="bg-white" onclick="sidebarType(this)">Solid</button>
+        </div>
+        <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
+        <!-- Navbar Fixed -->
+        <div class="mt-3">
+          <h6 class="mb-0">Navbar Fixed</h6>
+        </div>
+        <div class="form-check form-switch ps-0">
+          <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap.min.js"></script>
+  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+    <script src="../assets/js/plugins/chartjs.min.js"></script>
+  <script>
+    (function () {
+      var canvas = document.getElementById("logged-in-chart");
+      if (!canvas) return;
+
+      var labels = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var values = [450, 200, 100, 220, 500, 100, 400, 230, 500];
+      var chart;
+
+      function dataset(type) {
+        if (type === "line") {
+          return {
+            label: "Logged In Users",
+            tension: 0.4,
+            borderWidth: 3,
+            borderColor: "#fff",
+            backgroundColor: "rgba(255,255,255,0.15)",
+            pointRadius: 0,
+            fill: true,
+            data: values
+          };
+        }
+        return {
+          label: "Logged In Users",
+          borderWidth: 0,
+          borderRadius: 4,
+          borderSkipped: false,
+          backgroundColor: "#fff",
+          data: values,
+          maxBarThickness: 6
+        };
+      }
+
+      function render(type) {
+        if (chart) chart.destroy();
+        chart = new Chart(canvas, {
+          type: type,
+          data: {
+            labels: labels,
+            datasets: [dataset(type)]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              }
+            },
+            interaction: {
+              intersect: false,
+              mode: "index"
+            },
+            scales: {
+              y: {
+                grid: {
+                  drawBorder: false,
+                  display: false,
+                  drawOnChartArea: false,
+                  drawTicks: false
+                },
+                ticks: {
+                  suggestedMin: 0,
+                  suggestedMax: 500,
+                  beginAtZero: true,
+                  padding: 15,
+                  color: "#fff",
+                  font: {
+                    size: 14,
+                    family: "Inter",
+                    style: "normal",
+                    lineHeight: 2
+                  }
+                }
+              },
+              x: {
+                grid: {
+                  drawBorder: false,
+                  display: false,
+                  drawOnChartArea: false,
+                  drawTicks: false
+                },
+                ticks: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+      }
+
+      render("bar");
+
+      document.querySelectorAll(".chart-toggle-btn").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var type = button.getAttribute("data-chart-type");
+          render(type);
+          document.querySelectorAll(".chart-toggle-btn").forEach(function (btn) {
+            var active = btn === button;
+            btn.classList.toggle("is-active", active);
+            btn.setAttribute("aria-pressed", active ? "true" : "false");
+          });
+        });
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      var dateEl = document.getElementById("welcome-date");
+      if (dateEl) {
+        dateEl.textContent = new Date().toLocaleDateString(undefined, {
+          weekday: "long",
+          month: "long",
+          day: "numeric"
+        });
+      }
+    })();
+  </script>  <script src="../js/config.js?v=1.5.0"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/guard.js?v=1.0.1"></script>
+  <script src="../js/update-account.js" defer></script>
+  <script src="../js/dashboard.js" defer></script>
+  <script src="../js/notifications.js?v=1.5.1" defer></script>
+  <script src="../js/global-search.js?v=1.0.2" defer></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="../assets/js/soft-ui-dashboard.min.js?v=1.1.0"></script>
+  <script>
+    (function () {
+      function applySidenavType(type) {
+        var sidenav = document.getElementById("sidenav-main");
+        if (!sidenav) return;
+        var solid = type === "bg-white";
+        sidenav.classList.remove("bg-transparent", "bg-white");
+        sidenav.classList.add(solid ? "bg-white" : "bg-transparent");
+        if (solid) {
+          document.documentElement.setAttribute("data-sidenav", "solid");
+        } else {
+          document.documentElement.removeAttribute("data-sidenav");
+        }
+        document.querySelectorAll("#sidenav-main ~ .fixed-plugin [data-class], .fixed-plugin [data-class]").forEach(function (button) {
+          button.classList.toggle("active", button.getAttribute("data-class") === (solid ? "bg-white" : "bg-transparent"));
+        });
+      }
+
+      applySidenavType(localStorage.getItem("sidenav-type") === "bg-white" ? "bg-white" : "bg-transparent");
+
+      var originalSidebarType = window.sidebarType;
+      window.sidebarType = function (button) {
+        if (typeof originalSidebarType === "function") originalSidebarType(button);
+        var type = button.getAttribute("data-class");
+        if (type !== "bg-white" && type !== "bg-transparent") return;
+        localStorage.setItem("sidenav-type", type);
+        applySidenavType(type);
+      };
+
+      var sidenavColors = ["primary", "dark", "info", "success", "warning", "danger"];
+
+      function applySidebarColor(color) {
+        if (sidenavColors.indexOf(color) === -1) color = "primary";
+        var link = document.querySelector("#sidenav-main .nav-link.active");
+        if (link) {
+          sidenavColors.forEach(function (name) {
+            link.classList.remove("bg-gradient-" + name);
+          });
+          link.classList.add("bg-gradient-" + color);
+        }
+        document.documentElement.setAttribute("data-sidenav-color", color);
+        document.querySelectorAll(".fixed-plugin [data-color]").forEach(function (badge) {
+          badge.classList.toggle("active", badge.getAttribute("data-color") === color);
+        });
+      }
+
+      var savedSidenavColor = localStorage.getItem("sidenav-color");
+      if (sidenavColors.indexOf(savedSidenavColor) !== -1) {
+        applySidebarColor(savedSidenavColor);
+      }
+
+      var originalSidebarColor = window.sidebarColor;
+      window.sidebarColor = function (badge) {
+        if (typeof originalSidebarColor === "function") originalSidebarColor(badge);
+        var color = badge.getAttribute("data-color");
+        if (sidenavColors.indexOf(color) === -1) return;
+        localStorage.setItem("sidenav-color", color);
+        applySidebarColor(color);
+      };
+
+      var navbarFixedClasses = ["position-sticky", "blur", "shadow-blur", "mt-4", "left-auto", "top-1", "z-index-sticky"];
+
+      function applyNavbarFixed(fixed) {
+        var checkbox = document.getElementById("navbarFixed");
+        var navbar = document.getElementById("navbarBlur");
+        if (!navbar) return;
+        if (fixed) {
+          navbarFixedClasses.forEach(function (cls) {
+            navbar.classList.add(cls);
+          });
+          navbar.setAttribute("navbar-scroll", "true");
+          document.documentElement.setAttribute("data-navbar", "fixed");
+          if (checkbox) {
+            checkbox.setAttribute("checked", "true");
+            checkbox.checked = true;
+          }
+        } else {
+          navbarFixedClasses.forEach(function (cls) {
+            navbar.classList.remove(cls);
+          });
+          navbar.setAttribute("navbar-scroll", "false");
+          document.documentElement.removeAttribute("data-navbar");
+          if (checkbox) {
+            checkbox.removeAttribute("checked");
+            checkbox.checked = false;
+          }
+        }
+      }
+
+      applyNavbarFixed(localStorage.getItem("navbar-fixed") === "true");
+
+      var originalNavbarFixed = window.navbarFixed;
+      window.navbarFixed = function (el) {
+        if (typeof originalNavbarFixed === "function") originalNavbarFixed(el);
+        var fixed = !!el.getAttribute("checked");
+        localStorage.setItem("navbar-fixed", fixed ? "true" : "false");
+        applyNavbarFixed(fixed);
+      };
+
+      var themeToggle = document.getElementById("theme-toggle");
+      var themeLabel = themeToggle ? themeToggle.querySelector(".theme-label") : null;
+
+      function applyTheme(theme) {
+        var dark = theme === "dark";
+        if (dark) {
+          document.documentElement.setAttribute("data-theme", "dark");
+          document.documentElement.setAttribute("data-bs-theme", "dark");
+          localStorage.setItem("auth-theme", "dark");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+          document.documentElement.removeAttribute("data-bs-theme");
+          localStorage.setItem("auth-theme", "light");
+        }
+        if (themeToggle) themeToggle.setAttribute("aria-pressed", dark ? "true" : "false");
+        if (themeLabel) themeLabel.textContent = dark ? "Light mode" : "Dark mode";
+      }
+
+      applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
+      if (themeToggle) {
+        themeToggle.addEventListener("click", function () {
+          var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          applyTheme(next);
+        });
+      }
+    })();
+  </script>
+</body>
+
+</html>
+

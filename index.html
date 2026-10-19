@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CMS-PPA</title>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    var signedIn = window.CmsApi && window.CmsApi.token();
+    window.location.replace(signedIn ? "pages/dashboard.html" : "pages/sign-in.html");
+  </script>
+</head>
+<body>
+  <p><a href="pages/sign-in.html">Sign in</a></p>
+</body>
+</html>
