@@ -113,7 +113,10 @@
         inputs.first_name.focus();
     });
     async function send() {
-        const body = new FormData(form);
+        const body = {};
+        for (const name of FIELDS) {
+            body[name] = inputs[name].value;
+        }
         const controller = new AbortController();
         const timer = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
         setSubmitting(true);
@@ -122,9 +125,9 @@
         try {
             response = await fetch(window.CmsApi.url("/users"), {
                 method: "POST",
-                body,
+                body: JSON.stringify(body),
                 signal: controller.signal,
-                headers: window.CmsApi.headers(),
+                headers: window.CmsApi.headers({ "Content-Type": "application/json" }),
             });
             payload = await readPayload(response);
         }
