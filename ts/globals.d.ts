@@ -17,6 +17,16 @@ interface BootstrapToast {
   hide(): void;
 }
 
+interface CmsChart {
+  destroy(): void;
+}
+
+declare const Chart: new (canvas: HTMLCanvasElement, config: {
+  type: "bar" | "line";
+  data: { labels: string[]; datasets: object[] };
+  options: object;
+}) => CmsChart;
+
 declare const bootstrap: {
   Modal: {
     getOrCreateInstance(element: Element): BootstrapModal;

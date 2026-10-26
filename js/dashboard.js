@@ -53,6 +53,7 @@
         render: renderSignIns,
     });
     const widgets = [systemsWidget, signInsWidget];
+    mountActivityCharts(widgets);
     for (const widget of widgets) {
         void widget.load(true);
     }
@@ -99,7 +100,8 @@
             let status;
             let payload = {};
             try {
-                const response = await fetch(cmsApi.url(config.path), { signal: current.signal, headers: cmsApi.headers() });
+                const path = typeof config.path === "function" ? config.path() : config.path;
+                const response = await fetch(cmsApi.url(path), { signal: current.signal, headers: cmsApi.headers() });
                 status = response.status;
                 payload = await readJson(response);
             }
@@ -155,6 +157,160 @@
             }
         }
         return { load, loadedAt: () => loadedAt };
+    }
+    function mountActivityCharts(target) {
+        const cards = document.querySelectorAll("[data-activity-card]");
+        const redraws = [];
+        cards.forEach((card) => {
+            var _a;
+            const series = (_a = card.dataset.series) !== null && _a !== void 0 ? _a : "";
+            const summary = part(card, "summary");
+            const chartWrap = part(card, "chart");
+            const canvas = part(card, "canvas");
+            const live = part(card, "live");
+            const forbidden = part(card, "forbidden");
+            let chartKind = "bar";
+            let chart = null;
+            let latest = null;
+            function selectedRange() {
+                const active = card.querySelector("[data-range].is-active");
+                const range = active === null || active === void 0 ? void 0 : active.dataset.range;
+                if (range === "last_week" || range === "last_30_days") {
+                    return range;
+                }
+                return "current_week";
+            }
+            function draw() {
+                if (!latest || chartWrap.hidden || typeof Chart === "undefined") {
+                    return;
+                }
+                chart === null || chart === void 0 ? void 0 : chart.destroy();
+                const dark = document.documentElement.getAttribute("data-theme") === "dark";
+                const tick = dark ? "#a1a1aa" : "#71717a";
+                const grid = dark ? "rgba(255,255,255,0.08)" : "rgba(24,24,27,0.06)";
+                const counts = latest.data.map((point) => point.count);
+                const highest = counts.reduce((max, count) => Math.max(max, count), 0);
+                chart = new Chart(canvas, {
+                    type: chartKind,
+                    data: {
+                        labels: latest.data.map((point) => point.label),
+                        datasets: [chartDataset(chartKind, latest.meta.series_label, counts)],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        interaction: { intersect: false, mode: "index" },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                suggestedMax: highest === 0 ? 4 : undefined,
+                                grid: { color: grid, drawBorder: false },
+                                ticks: {
+                                    color: tick,
+                                    precision: 0,
+                                    font: { family: "Inter", size: 11 },
+                                },
+                            },
+                            x: {
+                                grid: { display: false, drawBorder: false },
+                                ticks: {
+                                    color: tick,
+                                    maxRotation: counts.length > 10 ? 45 : 0,
+                                    autoSkip: true,
+                                    maxTicksLimit: counts.length > 10 ? 8 : counts.length,
+                                    font: { family: "Inter", size: 11 },
+                                },
+                            },
+                        },
+                    },
+                });
+            }
+            const widget = createWidget({
+                path: () => `/dashboard/activity?series=${encodeURIComponent(series)}&range=${selectedRange()}`,
+                card,
+                noun: "activity",
+                loading: part(card, "loading"),
+                error: part(card, "error"),
+                errorText: part(card, "error-text"),
+                retry: part(card, "retry"),
+                forbidden,
+                refreshError: part(card, "refresh-error"),
+                content: [chartWrap],
+                live,
+                isValid: isActivityResponse,
+                render(response, announce) {
+                    latest = response;
+                    const events = response.meta.total === 1 ? "event" : "events";
+                    summary.textContent = `${response.meta.total} ${events} · ${response.meta.range_label}`;
+                    chartWrap.hidden = false;
+                    window.requestAnimationFrame(draw);
+                    if (announce) {
+                        live.textContent = `${response.meta.series_label}: ${response.meta.total} ${events} for ${response.meta.range_label.toLowerCase()}.`;
+                    }
+                },
+            });
+            card.querySelectorAll("[data-range]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    if (!forbidden.hidden || button.classList.contains("is-active")) {
+                        return;
+                    }
+                    card.querySelectorAll("[data-range]").forEach((other) => {
+                        const active = other === button;
+                        other.classList.toggle("is-active", active);
+                        other.setAttribute("aria-pressed", active ? "true" : "false");
+                    });
+                    void widget.load(true);
+                });
+            });
+            card.querySelectorAll("[data-chart-type]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const kind = button.dataset.chartType;
+                    if ((kind !== "bar" && kind !== "line") || kind === chartKind) {
+                        return;
+                    }
+                    chartKind = kind;
+                    card.querySelectorAll("[data-chart-type]").forEach((other) => {
+                        const active = other === button;
+                        other.classList.toggle("is-active", active);
+                        other.setAttribute("aria-pressed", active ? "true" : "false");
+                    });
+                    draw();
+                });
+            });
+            redraws.push(draw);
+            target.push(widget);
+        });
+        if (redraws.length > 0) {
+            new MutationObserver(() => {
+                for (const redraw of redraws) {
+                    redraw();
+                }
+            }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+        }
+    }
+    function chartDataset(kind, label, counts) {
+        if (kind === "line") {
+            return {
+                label,
+                data: counts,
+                tension: 0.35,
+                borderWidth: 3,
+                borderColor: "#f97316",
+                backgroundColor: "rgba(249, 115, 22, 0.15)",
+                pointRadius: 3,
+                pointBackgroundColor: "#f97316",
+                fill: true,
+            };
+        }
+        return {
+            label,
+            data: counts,
+            borderWidth: 0,
+            borderRadius: 6,
+            backgroundColor: "#f97316",
+            maxBarThickness: 28,
+        };
     }
     function renderSystems(response, announce) {
         const timeZone = safeTimeZone(response.meta.timezone);
@@ -326,6 +482,30 @@
             return false;
         const candidate = value;
         return Array.isArray(candidate.data) && typeof candidate.meta === "object" && candidate.meta !== null;
+    }
+    function isActivityResponse(value) {
+        if (typeof value !== "object" || value === null)
+            return false;
+        const candidate = value;
+        if (!Array.isArray(candidate.data) || typeof candidate.meta !== "object" || candidate.meta === null) {
+            return false;
+        }
+        if (typeof candidate.meta.total !== "number" || typeof candidate.meta.range_label !== "string" || typeof candidate.meta.series_label !== "string") {
+            return false;
+        }
+        return candidate.data.every((point) => {
+            if (typeof point !== "object" || point === null)
+                return false;
+            const item = point;
+            return typeof item.date === "string" && typeof item.label === "string" && typeof item.count === "number";
+        });
+    }
+    function part(root, name) {
+        const element = root.querySelector(`[data-part="${name}"]`);
+        if (!element) {
+            throw new Error(`Missing [data-part="${name}"]`);
+        }
+        return element;
     }
     function byId(id) {
         const element = document.getElementById(id);

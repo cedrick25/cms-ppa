@@ -43,8 +43,32 @@
     meta: { shows: string; limit: number; timezone: string; generated_at: string };
   }
 
+  type ChartKind = "bar" | "line";
+  type ActivityRange = "current_week" | "last_week" | "last_30_days";
+
+  interface ActivityPoint {
+    date: string;
+    label: string;
+    count: number;
+  }
+
+  interface ActivityResponse {
+    data: ActivityPoint[];
+    meta: {
+      series: string;
+      series_label: string;
+      range: string;
+      range_label: string;
+      from: string;
+      to: string;
+      total: number;
+      timezone: string;
+      generated_at: string;
+    };
+  }
+
   interface WidgetConfig<T> {
-    path: string;
+    path: string | (() => string);
     card: HTMLElement;
     noun: string;
     loading: HTMLElement;
@@ -124,6 +148,7 @@
   });
 
   const widgets = [systemsWidget, signInsWidget];
+  mountActivityCharts(widgets);
   for (const widget of widgets) {
     void widget.load(true);
   }
@@ -177,7 +202,8 @@
       let status: number;
       let payload: unknown = {};
       try {
-        const response = await fetch(cmsApi.url(config.path), { signal: current.signal, headers: cmsApi.headers() });
+        const path = typeof config.path === "function" ? config.path() : config.path;
+        const response = await fetch(cmsApi.url(path), { signal: current.signal, headers: cmsApi.headers() });
         status = response.status;
         payload = await readJson(response);
       } catch {
@@ -240,6 +266,169 @@
     }
 
     return { load, loadedAt: () => loadedAt };
+  }
+
+  function mountActivityCharts(target: Widget[]): void {
+    const cards = document.querySelectorAll<HTMLElement>("[data-activity-card]");
+    const redraws: Array<() => void> = [];
+
+    cards.forEach((card) => {
+      const series = card.dataset.series ?? "";
+      const summary = part<HTMLElement>(card, "summary");
+      const chartWrap = part<HTMLElement>(card, "chart");
+      const canvas = part<HTMLCanvasElement>(card, "canvas");
+      const live = part<HTMLElement>(card, "live");
+      const forbidden = part<HTMLElement>(card, "forbidden");
+      let chartKind: ChartKind = "bar";
+      let chart: CmsChart | null = null;
+      let latest: ActivityResponse | null = null;
+
+      function selectedRange(): ActivityRange {
+        const active = card.querySelector<HTMLButtonElement>("[data-range].is-active");
+        const range = active?.dataset.range;
+        if (range === "last_week" || range === "last_30_days") {
+          return range;
+        }
+        return "current_week";
+      }
+
+      function draw(): void {
+        if (!latest || chartWrap.hidden || typeof Chart === "undefined") {
+          return;
+        }
+        chart?.destroy();
+        const dark = document.documentElement.getAttribute("data-theme") === "dark";
+        const tick = dark ? "#a1a1aa" : "#71717a";
+        const grid = dark ? "rgba(255,255,255,0.08)" : "rgba(24,24,27,0.06)";
+        const counts = latest.data.map((point) => point.count);
+        const highest = counts.reduce((max, count) => Math.max(max, count), 0);
+        chart = new Chart(canvas, {
+          type: chartKind,
+          data: {
+            labels: latest.data.map((point) => point.label),
+            datasets: [chartDataset(chartKind, latest.meta.series_label, counts)],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            interaction: { intersect: false, mode: "index" },
+            scales: {
+              y: {
+                beginAtZero: true,
+                suggestedMax: highest === 0 ? 4 : undefined,
+                grid: { color: grid, drawBorder: false },
+                ticks: {
+                  color: tick,
+                  precision: 0,
+                  font: { family: "Inter", size: 11 },
+                },
+              },
+              x: {
+                grid: { display: false, drawBorder: false },
+                ticks: {
+                  color: tick,
+                  maxRotation: counts.length > 10 ? 45 : 0,
+                  autoSkip: true,
+                  maxTicksLimit: counts.length > 10 ? 8 : counts.length,
+                  font: { family: "Inter", size: 11 },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      const widget = createWidget<ActivityResponse>({
+        path: () => `/dashboard/activity?series=${encodeURIComponent(series)}&range=${selectedRange()}`,
+        card,
+        noun: "activity",
+        loading: part(card, "loading"),
+        error: part(card, "error"),
+        errorText: part(card, "error-text"),
+        retry: part(card, "retry"),
+        forbidden,
+        refreshError: part(card, "refresh-error"),
+        content: [chartWrap],
+        live,
+        isValid: isActivityResponse,
+        render(response, announce) {
+          latest = response;
+          const events = response.meta.total === 1 ? "event" : "events";
+          summary.textContent = `${response.meta.total} ${events} · ${response.meta.range_label}`;
+          chartWrap.hidden = false;
+          window.requestAnimationFrame(draw);
+          if (announce) {
+            live.textContent = `${response.meta.series_label}: ${response.meta.total} ${events} for ${response.meta.range_label.toLowerCase()}.`;
+          }
+        },
+      });
+
+      card.querySelectorAll<HTMLButtonElement>("[data-range]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!forbidden.hidden || button.classList.contains("is-active")) {
+            return;
+          }
+          card.querySelectorAll<HTMLButtonElement>("[data-range]").forEach((other) => {
+            const active = other === button;
+            other.classList.toggle("is-active", active);
+            other.setAttribute("aria-pressed", active ? "true" : "false");
+          });
+          void widget.load(true);
+        });
+      });
+
+      card.querySelectorAll<HTMLButtonElement>("[data-chart-type]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const kind = button.dataset.chartType;
+          if ((kind !== "bar" && kind !== "line") || kind === chartKind) {
+            return;
+          }
+          chartKind = kind;
+          card.querySelectorAll<HTMLButtonElement>("[data-chart-type]").forEach((other) => {
+            const active = other === button;
+            other.classList.toggle("is-active", active);
+            other.setAttribute("aria-pressed", active ? "true" : "false");
+          });
+          draw();
+        });
+      });
+
+      redraws.push(draw);
+      target.push(widget);
+    });
+
+    if (redraws.length > 0) {
+      new MutationObserver(() => {
+        for (const redraw of redraws) {
+          redraw();
+        }
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    }
+  }
+
+  function chartDataset(kind: ChartKind, label: string, counts: number[]): object {
+    if (kind === "line") {
+      return {
+        label,
+        data: counts,
+        tension: 0.35,
+        borderWidth: 3,
+        borderColor: "#f97316",
+        backgroundColor: "rgba(249, 115, 22, 0.15)",
+        pointRadius: 3,
+        pointBackgroundColor: "#f97316",
+        fill: true,
+      };
+    }
+    return {
+      label,
+      data: counts,
+      borderWidth: 0,
+      borderRadius: 6,
+      backgroundColor: "#f97316",
+      maxBarThickness: 28,
+    };
   }
 
   function renderSystems(response: SystemsResponse, announce: boolean): void {
@@ -424,6 +613,30 @@
     if (typeof value !== "object" || value === null) return false;
     const candidate = value as Partial<SignInsResponse>;
     return Array.isArray(candidate.data) && typeof candidate.meta === "object" && candidate.meta !== null;
+  }
+
+  function isActivityResponse(value: unknown): value is ActivityResponse {
+    if (typeof value !== "object" || value === null) return false;
+    const candidate = value as Partial<ActivityResponse>;
+    if (!Array.isArray(candidate.data) || typeof candidate.meta !== "object" || candidate.meta === null) {
+      return false;
+    }
+    if (typeof candidate.meta.total !== "number" || typeof candidate.meta.range_label !== "string" || typeof candidate.meta.series_label !== "string") {
+      return false;
+    }
+    return candidate.data.every((point) => {
+      if (typeof point !== "object" || point === null) return false;
+      const item = point as Partial<ActivityPoint>;
+      return typeof item.date === "string" && typeof item.label === "string" && typeof item.count === "number";
+    });
+  }
+
+  function part<T extends HTMLElement>(root: ParentNode, name: string): T {
+    const element = root.querySelector<T>(`[data-part="${name}"]`);
+    if (!element) {
+      throw new Error(`Missing [data-part="${name}"]`);
+    }
+    return element;
   }
 
   function byId<T extends HTMLElement>(id: string): T {

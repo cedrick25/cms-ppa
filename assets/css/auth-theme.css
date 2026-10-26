@@ -386,6 +386,28 @@ html[data-theme="dark"] .page-item.active .page-link {
     #fff;
 }
 
+.welcome-body {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 992px) {
+  .welcome-body {
+    display: grid;
+    grid-template-columns: minmax(18rem, 26rem) minmax(0, 1fr);
+    column-gap: 2rem;
+    align-items: start;
+  }
+
+  .welcome-card .notifications-panel {
+    margin-top: 0;
+    padding-top: 0;
+    padding-left: 2rem;
+    border-top: 0;
+    border-left: 1px solid rgba(24, 24, 27, 0.08);
+  }
+}
+
 .welcome-kicker {
   font-size: 0.75rem;
   font-weight: 600;
@@ -446,6 +468,10 @@ html[data-theme="dark"] .welcome-card {
   background:
     radial-gradient(circle at 100% 0%, rgba(249, 115, 22, 0.22), transparent 46%),
     #27272a;
+}
+
+html[data-theme="dark"] .welcome-card .notifications-panel {
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 html[data-theme="dark"] .welcome-hello {
@@ -978,6 +1004,79 @@ html[data-theme="dark"] .chart-toggle-btn {
 html[data-theme="dark"] .chart-toggle-btn.is-active {
   background: #f97316;
   color: #fff;
+}
+
+.activity-card h6:focus {
+  outline: none;
+}
+
+.activity-card h6:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.activity-filter-label {
+  margin-bottom: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+
+.activity-filter {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 0.65rem;
+  background: #f4f4f5;
+}
+
+.activity-filter-btn {
+  flex: 1 1 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #52525b;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.4rem 0.35rem;
+}
+
+.activity-filter-btn.is-active {
+  background: #fff;
+  color: #27272a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.activity-filter-btn:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 1px;
+}
+
+.activity-chart {
+  position: relative;
+  height: 190px;
+  margin-top: 1rem;
+}
+
+html[data-theme="dark"] .activity-filter-label {
+  color: #a1a1aa;
+}
+
+html[data-theme="dark"] .activity-filter {
+  background: #18181b;
+}
+
+html[data-theme="dark"] .activity-filter-btn {
+  color: #a1a1aa;
+}
+
+html[data-theme="dark"] .activity-filter-btn.is-active {
+  background: #3f3f46;
+  color: #f4f4f5;
 }
 
 /* Register user */
