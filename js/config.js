@@ -1,1 +1,1 @@
-window.CMS_API_BASE = "http://localhost/cms-ppa-backend/public/api";
+window.CMS_API_BASE = "http://127.0.0.1:8080/api";
