@@ -42,7 +42,18 @@ interface CmsUser {
   can?: { manage_users?: boolean; manage_systems?: boolean; view_audit_trail?: boolean };
 }
 
+interface RemoteDeskAuthRequest {
+  systemId: number;
+  systemName: string;
+  action: "details" | "update" | "password";
+}
+
+interface CmsRemoteDeskAuth {
+  confirm(request: RemoteDeskAuthRequest): Promise<string | null>;
+}
+
 interface Window {
   CmsApi?: CmsApiClient;
   CMS_USER?: CmsUser;
+  CmsRemoteDeskAuth?: CmsRemoteDeskAuth;
 }

@@ -10,8 +10,12 @@
         user_account: "User accounts",
     };
     const api = window.CmsApi;
+    if (!api || !api.token()) {
+        return;
+    }
+    mountNotificationsChrome();
     const panel = document.getElementById("notifications");
-    if (!api || !api.token() || !(panel instanceof HTMLElement)) {
+    if (!(panel instanceof HTMLElement)) {
         return;
     }
     const cmsApi = api;
@@ -27,9 +31,10 @@
     const refreshError = byId("notifications-refresh-error");
     const live = byId("notifications-live");
     const markAll = byId("notifications-mark-all");
-    const unreadPill = byId("notifications-unread-pill");
+    const unreadPill = document.getElementById("notifications-unread-pill");
     const bell = byId("notifications-bell");
     const bellBadge = byId("notifications-bell-badge");
+    const menu = document.getElementById("notifications-menu");
     const modal = byId("notification-modal");
     const modalTitle = byId("notification-modal-title");
     const modalCategory = byId("notification-modal-category");
@@ -75,20 +80,49 @@
     });
     retry.addEventListener("click", () => void load());
     markAll.addEventListener("click", () => void markAllAsRead());
-    unreadPill.addEventListener("click", focusPanel);
-    bell.addEventListener("click", focusPanel);
+    if (unreadPill instanceof HTMLButtonElement) {
+        unreadPill.addEventListener("click", focusPanel);
+    }
+    bell.addEventListener("click", () => {
+        if (menu instanceof HTMLElement) {
+            setMenuOpen(menu.hidden);
+            return;
+        }
+        focusPanel();
+    });
+    if (menu instanceof HTMLElement) {
+        document.addEventListener("click", (event) => {
+            if (menu.hidden || modal.classList.contains("show")) {
+                return;
+            }
+            const target = event.target;
+            if (target instanceof Node && (menu.contains(target) || bell.contains(target) || modal.contains(target))) {
+                return;
+            }
+            setMenuOpen(false);
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && !menu.hidden && !modal.classList.contains("show")) {
+                setMenuOpen(false);
+                bell.focus();
+            }
+        });
+    }
     toastView.addEventListener("click", () => {
         bootstrap.Toast.getOrCreateInstance(toast).hide();
         const target = toastTarget ? items.find((item) => item.id === (toastTarget === null || toastTarget === void 0 ? void 0 : toastTarget.id)) : undefined;
         if (target) {
             openNotification(target, false);
         }
+        else if (menu instanceof HTMLElement) {
+            setMenuOpen(true);
+        }
         else {
             focusPanel();
         }
     });
     modalAction.addEventListener("click", (event) => {
-        if (modalAction.dataset.page !== "dashboard") {
+        if (modalAction.dataset.page !== "dashboard" || document.body.dataset.page !== "dashboard") {
             return;
         }
         event.preventDefault();
@@ -190,11 +224,14 @@
         }
         const hasUnread = unreadCount > 0;
         markAll.hidden = !hasUnread;
-        unreadPill.hidden = !hasUnread;
-        unreadPill.textContent = `${unreadCount} unread ${unreadCount === 1 ? "notification" : "notifications"}`;
+        if (unreadPill instanceof HTMLButtonElement) {
+            unreadPill.hidden = !hasUnread;
+            unreadPill.textContent = `${unreadCount} unread ${unreadCount === 1 ? "notification" : "notifications"}`;
+        }
         bellBadge.hidden = !hasUnread;
-        bellBadge.textContent = unreadCount > 9 ? "9+" : String(unreadCount);
+        bellBadge.textContent = formatBadge(unreadCount);
         bellBadge.setAttribute("aria-label", `${unreadCount} unread`);
+        bell.setAttribute("aria-label", hasUnread ? `Notifications, ${formatBadge(unreadCount)} unread` : "Notifications");
         bell.title = hasUnread ? `${unreadCount} unread notifications` : "No unread notifications";
         if (openId) {
             const open = items.find((item) => item.id === openId);
@@ -267,8 +304,9 @@
     function fillAction(link) {
         var _a, _b;
         const can = (_a = window.CMS_USER) === null || _a === void 0 ? void 0 : _a.can;
+        const onDashboard = document.body.dataset.page === "dashboard";
         const target = link === null ? null
-            : link.page === "dashboard" ? { label: "View website status", href: "#dashboard-systems" }
+            : link.page === "dashboard" ? { label: "View website status", href: onDashboard ? "#dashboard-systems" : "dashboard.html#dashboard-systems" }
                 : link.page === "systems" && (can === null || can === void 0 ? void 0 : can.manage_systems) !== false ? { label: "Open in Credentials", href: withSearch("systems.html", link.search) }
                     : link.page === "users" && (can === null || can === void 0 ? void 0 : can.manage_users) !== false ? { label: "Open in Users", href: withSearch("users.html", link.search) }
                         : null;
@@ -355,6 +393,19 @@
         panel === null || panel === void 0 ? void 0 : panel.scrollIntoView({ block: "center" });
         heading.focus({ preventScroll: true });
     }
+    function setMenuOpen(open) {
+        if (!(menu instanceof HTMLElement)) {
+            return;
+        }
+        menu.hidden = !open;
+        bell.setAttribute("aria-expanded", open ? "true" : "false");
+        if (open) {
+            heading.focus();
+        }
+    }
+    function formatBadge(count) {
+        return count > 9 ? "9+" : String(count);
+    }
     function showSystemsCard() {
         const card = document.getElementById("dashboard-systems");
         if (!card) {
@@ -387,6 +438,126 @@
         }
         finally {
             window.clearTimeout(timer);
+        }
+    }
+    function mountNotificationsChrome() {
+        var _a, _b;
+        const nav = document.querySelector("#navbar > .navbar-nav");
+        if (!document.getElementById("notifications-bell") && nav) {
+            const item = document.createElement("li");
+            item.className = "nav-item pe-2 d-flex align-items-center";
+            item.innerHTML = `<button type="button" class="nav-link text-body p-0 border-0 bg-transparent notifications-bell" id="notifications-bell" aria-controls="notifications" aria-describedby="notifications-bell-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+        <span class="visually-hidden">Notifications</span>
+        <span class="notifications-bell-badge" id="notifications-bell-badge" hidden></span>
+      </button>`;
+            const mobile = (_a = nav.querySelector("#iconNavbarSidenav")) === null || _a === void 0 ? void 0 : _a.closest("li");
+            if (mobile) {
+                nav.insertBefore(item, mobile);
+            }
+            else {
+                nav.append(item);
+            }
+        }
+        const bellButton = document.getElementById("notifications-bell");
+        if (bellButton && !document.getElementById("notifications-bell-badge")) {
+            const badge = document.createElement("span");
+            badge.className = "notifications-bell-badge";
+            badge.id = "notifications-bell-badge";
+            badge.hidden = true;
+            bellButton.append(badge);
+        }
+        if (!document.getElementById("notifications") && bellButton) {
+            const anchor = (_b = bellButton.closest(".nav-item")) !== null && _b !== void 0 ? _b : bellButton.parentElement;
+            if (anchor) {
+                anchor.classList.add("notifications-anchor");
+                anchor.insertAdjacentHTML("beforeend", `<div class="notifications-menu" id="notifications-menu" hidden>
+          <section class="notifications-panel" id="notifications" aria-labelledby="notifications-title" aria-busy="true">
+            <div class="notifications-header">
+              <h6 class="mb-0" id="notifications-title" tabindex="-1">Notifications</h6>
+              <button type="button" class="btn btn-link btn-sm mb-0 p-0 notifications-mark-all" id="notifications-mark-all" hidden>Mark all as read</button>
+            </div>
+            <p class="visually-hidden" id="notifications-live" aria-live="polite"></p>
+            <p class="dashboard-refresh-warning text-xs mb-2" id="notifications-refresh-error" role="status" hidden></p>
+            <div class="notifications-state" id="notifications-loading">
+              <span class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
+              <span class="text-sm">Loading notifications…</span>
+            </div>
+            <div class="notifications-state" id="notifications-empty" hidden>
+              <span class="text-sm">You're all caught up. Website status changes appear here automatically.</span>
+            </div>
+            <div class="notifications-state is-error" id="notifications-error" hidden>
+              <span class="text-sm" id="notifications-error-text">Couldn't load notifications.</span>
+              <button type="button" class="btn btn-outline-secondary btn-sm mb-0" id="notifications-retry">Try again</button>
+            </div>
+            <ul class="notifications-list list-unstyled mb-0" id="notifications-list" hidden></ul>
+          </section>
+        </div>`);
+                bellButton.setAttribute("aria-expanded", "false");
+                bellButton.setAttribute("aria-haspopup", "true");
+            }
+        }
+        if (!document.getElementById("notification-item")) {
+            document.body.insertAdjacentHTML("beforeend", `<template id="notification-item">
+        <li>
+          <button type="button" class="notification-item" data-field="button">
+            <span class="notification-icon" aria-hidden="true">
+              <svg data-icon="down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg>
+              <svg data-icon="recovered" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.5 2.5L16 9.5"></path></svg>
+              <svg data-icon="credentials" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 9a5.5 5.5 0 1 1 4.9 5.47L11 16h-2v2H7v2H3v-3.6l5.53-5.53A5.5 5.5 0 0 1 7.5 9z"></path></svg>
+              <svg data-icon="account" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 19.2c1.2-2.6 3.5-3.9 6.5-3.9s5.3 1.3 6.5 3.9"></path></svg>
+            </span>
+            <span class="notification-body">
+              <span class="notification-title" data-field="title"></span>
+              <span class="notification-message" data-field="message"></span>
+              <time class="notification-time" data-field="time"></time>
+            </span>
+            <span class="notification-dot" data-field="dot"></span>
+            <span class="visually-hidden" data-field="state"></span>
+          </button>
+        </li>
+      </template>`);
+        }
+        if (!document.getElementById("notification-modal")) {
+            document.body.insertAdjacentHTML("beforeend", `<div class="modal fade" id="notification-modal" tabindex="-1" aria-labelledby="notification-modal-title" aria-describedby="notification-modal-message" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content users-modal">
+            <div class="modal-header">
+              <h5 class="modal-title" id="notification-modal-title"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p class="text-xs text-secondary mb-2">
+                <span class="notification-category" id="notification-modal-category"></span>
+                <time id="notification-modal-time"></time>
+              </p>
+              <p class="text-sm mb-3" id="notification-modal-message"></p>
+              <dl class="notification-details mb-3" id="notification-modal-details"></dl>
+              <p class="text-xs mb-0 notification-read-status" id="notification-modal-read-status" role="status"></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary mb-0" data-bs-dismiss="modal">Close</button>
+              <a class="btn mb-0" id="notification-modal-action" hidden></a>
+            </div>
+          </div>
+        </div>
+      </div>`);
+        }
+        if (!document.getElementById("notification-toast-container")) {
+            document.body.insertAdjacentHTML("beforeend", `<div class="toast-container position-fixed bottom-0 end-0 p-3 systems-toast-container" id="notification-toast-container">
+        <div class="toast systems-toast" id="notification-toast" aria-labelledby="notification-toast-title">
+          <div class="toast-header">
+            <strong class="me-auto text-sm" id="notification-toast-title"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">
+            <p class="text-sm mb-2 systems-toast-message" id="notification-toast-message"></p>
+            <div class="systems-toast-actions">
+              <button type="button" class="btn btn-sm btn-outline-dark mb-0" id="notification-toast-view">View</button>
+            </div>
+          </div>
+        </div>
+      </div>`);
         }
     }
     function iconFor(item) {

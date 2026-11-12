@@ -1344,6 +1344,12 @@ html[data-theme="dark"] .form-control.is-invalid {
   max-width: 28rem;
 }
 
+.audit-ip {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
 .users-search {
   position: relative;
   flex: 1 1 260px;
@@ -1953,6 +1959,62 @@ html[data-theme="dark"] .users-target [data-target="name"] {
   overflow-wrap: anywhere;
 }
 
+.systems-table tbody td:not([data-label="Actions"]) {
+  cursor: pointer;
+}
+
+.systems-view-group + .systems-view-group {
+  margin-top: 1.25rem;
+}
+
+.systems-facts {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.systems-facts div {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.35rem 0.75rem;
+  align-items: baseline;
+}
+
+.systems-facts dt {
+  margin: 0;
+  color: #71717a;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.systems-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+}
+
+.systems-secret-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.systems-secret-line > span {
+  overflow-wrap: anywhere;
+}
+
+.systems-facts .systems-remote-copy,
+.systems-facts .systems-remote-copy.is-copied {
+  opacity: 1;
+}
+
+.systems-remote-connect {
+  margin-top: 0.75rem;
+}
+
 .systems-description {
   display: block;
   max-width: 240px;
@@ -2008,6 +2070,34 @@ html[data-theme="dark"] .users-target [data-target="name"] {
   white-space: normal;
   overflow-wrap: anywhere;
   font-size: 0.8rem;
+}
+
+.systems-hidden-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #8392ab;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+}
+
+.systems-hidden-value:hover,
+.systems-hidden-value:focus-visible {
+  color: #344767;
+}
+
+.systems-hidden-value:focus-visible {
+  outline: 2px solid #344767;
+  outline-offset: 2px;
+}
+
+.systems-remote-item .systems-hidden-value {
+  flex-wrap: wrap;
+  letter-spacing: normal;
 }
 
 .systems-na {
@@ -2425,6 +2515,19 @@ html[data-theme="dark"] .systems-group-title {
   color: #f4f4f5;
 }
 
+html[data-theme="dark"] .systems-hidden-value {
+  color: #a1a1aa;
+}
+
+html[data-theme="dark"] .systems-hidden-value:hover,
+html[data-theme="dark"] .systems-hidden-value:focus-visible {
+  color: #f4f4f5;
+}
+
+html[data-theme="dark"] .systems-facts dt {
+  color: #a1a1aa;
+}
+
 html[data-theme="dark"] .systems-na {
   background: rgba(255, 255, 255, 0.06);
   color: #71717a;
@@ -2638,4 +2741,150 @@ html[data-theme="dark"] .global-search-title {
 html[data-theme="dark"] .global-search-detail,
 html[data-theme="dark"] .global-search-empty {
   color: #a1a1aa;
+}
+
+.permission-summary {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  color: #71717a;
+}
+
+.permission-group {
+  margin-top: 1rem;
+}
+
+.permission-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.permission-group-header h6 {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+
+.permission-group-toggle {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 0.75rem;
+  color: #3f3f46;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.permission-group-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.permission-choice {
+  display: grid;
+  grid-template-columns: 1.15rem 1fr;
+  column-gap: 0.7rem;
+  align-items: start;
+  margin: 0;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 0.5rem;
+  background: #fff;
+  cursor: pointer;
+}
+
+.permission-choice-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  appearance: auto;
+}
+
+.permission-choice-box {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.1rem;
+  border: 1.5px solid #a1a1aa;
+  border-radius: 0.3rem;
+  background: #fff;
+}
+
+.permission-choice-input:checked + .permission-choice-box {
+  border-color: #18181b;
+  background: #18181b url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.2 6.4 11 12.5 4.8' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 0.85rem 0.85rem no-repeat;
+}
+
+.permission-choice-input:focus-visible + .permission-choice-box {
+  outline: 2px solid #18181b;
+  outline-offset: 2px;
+}
+
+.permission-choice:has(.permission-choice-input:checked) {
+  border-color: #18181b;
+  background: #fafafa;
+}
+
+.permission-choice-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.permission-choice-name {
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: #18181b;
+}
+
+.permission-choice-detail {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: #71717a;
+}
+
+html[data-theme="dark"] .permission-summary,
+html[data-theme="dark"] .permission-group-header h6,
+html[data-theme="dark"] .permission-choice-detail {
+  color: #a1a1aa;
+}
+
+html[data-theme="dark"] .permission-group-toggle {
+  color: #e4e4e7;
+}
+
+html[data-theme="dark"] .permission-choice {
+  border-color: #3f3f46;
+  background: #18181b;
+}
+
+html[data-theme="dark"] .permission-choice-box {
+  border-color: #71717a;
+  background: transparent;
+}
+
+html[data-theme="dark"] .permission-choice-input:checked + .permission-choice-box {
+  border-color: #f4f4f5;
+  background-color: #f4f4f5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.2 6.4 11 12.5 4.8' fill='none' stroke='%2318181b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+html[data-theme="dark"] .permission-choice:has(.permission-choice-input:checked) {
+  border-color: #e4e4e7;
+  background: #27272a;
+}
+
+html[data-theme="dark"] .permission-choice-name {
+  color: #f4f4f5;
 }

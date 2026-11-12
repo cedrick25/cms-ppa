@@ -44,6 +44,9 @@
     const rangeText = byId("users-range");
     const prevButton = byId("users-prev");
     const nextButton = byId("users-next");
+    const viewModal = byId("user-view-modal");
+    const viewTitle = byId("user-view-title");
+    const viewUpdate = byId("user-view-update");
     const editModal = byId("user-edit-modal");
     const editForm = byId("user-edit-form");
     const editAlert = byId("user-edit-alert");
@@ -78,13 +81,14 @@
         page: Math.max(1, Number.parseInt((_g = query.get("page")) !== null && _g !== void 0 ? _g : "1", 10) || 1),
     };
     const records = new Map();
+    let roleChoicesReady = null;
     let listController = null;
     let hasRendered = false;
     let searchTimer = 0;
     let activeUser = null;
     let busyModal = null;
     let focusAfterClose = null;
-    for (const modal of [editModal, passwordModal, statusModal, removeModal]) {
+    for (const modal of [viewModal, editModal, passwordModal, statusModal, removeModal]) {
         document.body.append(modal);
         modal.addEventListener("hide.bs.modal", (event) => {
             if (busyModal === modal) {
@@ -159,18 +163,11 @@
             return;
         }
         switch (button.dataset.action) {
-            case "edit":
-                openEdit(record, button);
+            case "view":
+                openView(record, button);
                 break;
             case "password":
-                if (record.is_current_user) {
-                    const updateAccount = window.CmsUpdateAccount;
-                    if (updateAccount)
-                        void updateAccount.open(button);
-                }
-                else {
-                    openPassword(record, button);
-                }
+                openPassword(record, button);
                 break;
             case "status":
                 openStatus(record, button);
@@ -226,6 +223,7 @@
         void load();
     }
     async function load() {
+        await ensureRoleChoices();
         listController === null || listController === void 0 ? void 0 : listController.abort();
         const controller = new AbortController();
         listController = controller;
@@ -355,18 +353,14 @@
         }
         const you = row.querySelector('[data-field="you"]');
         const selfNote = row.querySelector('[data-field="self-note"]');
-        const editButton = row.querySelector('[data-action="edit"]');
+        const editButton = row.querySelector('[data-action="view"]');
         const passwordButton = row.querySelector('[data-action="password"]');
         if (passwordButton) {
-            if (user.is_current_user) {
-                passwordButton.textContent = "Update account";
-                passwordButton.setAttribute("aria-label", "Update your own account details or password");
-            }
-            else if (user.can && user.can.reset_password) {
-                passwordButton.setAttribute("aria-label", `Reset password for ${user.name}`);
+            if (user.is_current_user || !(user.can && user.can.reset_password)) {
+                passwordButton.remove();
             }
             else {
-                passwordButton.remove();
+                passwordButton.setAttribute("aria-label", `Reset password for ${user.name}`);
             }
         }
         const statusButton = row.querySelector('[data-action="status"]');
@@ -445,11 +439,54 @@
             button.setAttribute("aria-pressed", active ? "true" : "false");
         }
     }
+    viewUpdate.addEventListener("click", () => {
+        const user = activeUser;
+        const returnFocus = focusAfterClose;
+        if (!user) {
+            return;
+        }
+        viewModal.addEventListener("hidden.bs.modal", () => openEdit(user, returnFocus), { once: true });
+        bootstrap.Modal.getOrCreateInstance(viewModal).hide();
+    });
+    function openView(user, trigger) {
+        activeUser = user;
+        focusAfterClose = trigger;
+        viewTitle.textContent = user.name;
+        const legacyName = !user.last_name;
+        const parts = legacyName ? guessNameParts(user.name) : user;
+        setViewText("name", user.name);
+        setViewText("first_name", parts.first_name);
+        setViewText("middle_name", parts.middle_name);
+        setViewText("last_name", parts.last_name);
+        setViewText("suffix", parts.suffix);
+        setViewText("email", user.email);
+        setViewText("username", user.username);
+        setViewText("role", roleLabel(user.role));
+        const status = viewModal.querySelector('[data-view="status"]');
+        if (status) {
+            applyStatusBadge(status, user.status);
+        }
+        setViewText("created", formatDateTime(user.created_at));
+        setViewText("updated", formatDateTime(user.updated_at));
+        if (window.CmsPermissions) {
+            window.CmsPermissions.apply(viewModal);
+        }
+        bootstrap.Modal.getOrCreateInstance(viewModal).show();
+    }
+    function setViewText(key, value) {
+        const element = viewModal.querySelector(`[data-view="${key}"]`);
+        if (!element) {
+            return;
+        }
+        const text = value !== null && value !== void 0 ? String(value).trim() : "";
+        element.textContent = text === "" ? "—" : text;
+        element.classList.toggle("is-empty", text === "");
+    }
     function openEdit(user, trigger) {
         activeUser = user;
         focusAfterClose = trigger;
         hideAlert(editAlert);
-        byId("user-edit-title").textContent = `${user.name}`;
+        byId("user-edit-title").textContent = "Update account";
         const legacyName = !user.last_name;
         const parts = legacyName ? guessNameParts(user.name) : user;
         for (const name of EDIT_FIELDS) {
@@ -598,6 +635,58 @@
     function roleLabel(role) {
         var _a;
         return (_a = ROLES[role]) !== null && _a !== void 0 ? _a : role;
+    }
+    function ensureRoleChoices() {
+        if (!roleChoicesReady) {
+            roleChoicesReady = loadRoleChoices();
+        }
+        return roleChoicesReady;
+    }
+    async function loadRoleChoices() {
+        const collected = [];
+        let page = 1;
+        let lastPage = 1;
+        try {
+            while (page <= lastPage && page <= 20) {
+                const response = await fetch(window.CmsApi.url("/user-roles?page=" + page), {
+                    headers: window.CmsApi.headers(),
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (response.status !== 200 || !Array.isArray(payload.data)) {
+                    return;
+                }
+                collected.push(...payload.data);
+                lastPage = Number(payload.meta && payload.meta.last_page) || 1;
+                page += 1;
+            }
+        }
+        catch (_error) {
+            return;
+        }
+        if (collected.length === 0) {
+            return;
+        }
+        const select = editInputs.role;
+        const selected = select instanceof HTMLSelectElement ? select.value : "";
+        if (select instanceof HTMLSelectElement) {
+            select.replaceChildren();
+        }
+        for (const role of collected) {
+            if (!role || typeof role.code !== "string" || role.code === "" || typeof role.name !== "string") {
+                continue;
+            }
+            ROLES[role.code] = role.name;
+            if (!(select instanceof HTMLSelectElement)) {
+                continue;
+            }
+            const option = document.createElement("option");
+            option.value = role.code;
+            option.textContent = role.name;
+            select.append(option);
+        }
+        if (select instanceof HTMLSelectElement && selected && Object.prototype.hasOwnProperty.call(ROLES, selected)) {
+            select.value = selected;
+        }
     }
     function openStatus(user, trigger) {
         activeUser = user;
@@ -831,7 +920,7 @@
                     return "Enter a valid email address, like name@example.com.";
                 return null;
             case "role":
-                return value in ROLES ? null : "Choose Administrator or User.";
+                return Object.prototype.hasOwnProperty.call(ROLES, value) ? null : "Choose a role.";
             case "username":
                 if (value === "")
                     return "Choose a username.";

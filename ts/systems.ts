@@ -28,11 +28,20 @@
     mysql_host: string | null;
     domain: string | null;
     vm_host: string | null;
+    details_hidden?: boolean;
     created_at: string | null;
     updated_at: string | null;
   }
 
   type SystemDetail = { id: number; created_at: string | null; updated_at: string | null } & Record<FormField, string | null>;
+
+  interface Fact {
+    label: string;
+    value: string | null;
+    secret?: boolean;
+    copy?: string | null;
+    beforeCopy?: () => Promise<boolean>;
+  }
 
   interface ListResponse {
     data: SystemSummary[];
@@ -63,7 +72,6 @@
   /** Must match the length of the .timed-alert animation in auth-theme.css. */
   const TIMED_ALERT_MS = 3000;
   const SEARCH_DELAY_MS = 300;
-  const LAUNCH_TOAST_MS = 8000;
   const COPIED_RESET_MS = 1500;
   const NAME_MAX = 100;
   /** Remembers, per browser, which link helpers are installed (see assets/downloads). */
@@ -77,9 +85,10 @@
   const RDP_USERNAME = /^[^\u0000-\u001f\u007f]{1,100}$/;
   const IS_MAC = /Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints === 0;
   const TERMINAL_NAME = IS_MAC ? "Terminal" : "PowerShell";
-  const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V6a2 2 0 0 1 2-2h9"></path></svg>';
-  const COPIED_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>';
+  const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V6a2 2 0 0 1 2-2h9"></path></svg>';
+  const COPIED_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>';
   const ENVIRONMENTS: Record<Environment, string> = { production: "Production", test: "Test", legacy: "Legacy" };
+  const FIELD_LABELS = { local_ip: "local IP", mysql_host: "MySQL address", domain: "domain", vm_host: "VM host" } as const;
   const FILTERS: EnvironmentFilter[] = ["all", "production", "test", "legacy"];
   const SECRET_FIELDS = [
     "anydesk_password", "rustdesk_password", "rdp_password", "ssh_password",
@@ -135,6 +144,13 @@
   const prevButton = byId<HTMLButtonElement>("systems-prev");
   const nextButton = byId<HTMLButtonElement>("systems-next");
 
+  const viewModal = byId<HTMLElement>("system-view-modal");
+  const viewTitle = byId<HTMLElement>("system-view-title");
+  const viewBody = byId<HTMLElement>("system-view-body");
+  const viewUpdate = byId<HTMLButtonElement>("system-view-update");
+  const remoteModal = byId<HTMLElement>("system-remote-modal");
+  const remoteTitle = byId<HTMLElement>("system-remote-title");
+  const remoteBody = byId<HTMLElement>("system-remote-body");
   const formModal = byId<HTMLElement>("system-form-modal");
   const form = byId<HTMLFormElement>("system-form");
   const formTitle = byId<HTMLElement>("system-form-title");
@@ -164,15 +180,6 @@
     ssh: byId<HTMLInputElement>("systems-ssh-links-toggle"),
     rdp: byId<HTMLInputElement>("systems-rdp-links-toggle"),
   };
-  const toastContainer = byId<HTMLElement>("systems-toast-container");
-  const toast = byId<HTMLElement>("systems-toast");
-  const toastTag = byId<HTMLElement>("systems-toast-tag");
-  const toastTitle = byId<HTMLElement>("systems-toast-title");
-  const toastMessage = byId<HTMLElement>("systems-toast-message");
-  const toastPassword = byId<HTMLButtonElement>("systems-toast-password");
-  const toastSetup = byId<HTMLButtonElement>("systems-toast-setup");
-  const toastStatus = byId<HTMLElement>("systems-toast-status");
-
   const query = new URLSearchParams(window.location.search);
   const state = {
     search: (query.get("search") ?? "").slice(0, 100),
@@ -181,6 +188,7 @@
   };
 
   const records = new Map<number, SystemSummary>();
+  const opened = new Map<number, SystemDetail>();
   let listController: AbortController | null = null;
   let detailController: AbortController | null = null;
   let hasRendered = false;
@@ -191,11 +199,36 @@
   let busyModal: HTMLElement | null = null;
   let focusAfterClose: HTMLElement | null = null;
   let formShown = false;
-  let toastTarget: { system: SystemSummary; entry: RemoteAccess } | null = null;
-  let toastTrigger: HTMLElement | null = null;
+  let viewSystem: SystemSummary | null = null;
+  let viewTrigger: HTMLElement | null = null;
+  let openUpdateAfterClose = false;
+  const detailRequests = new Map<number, Promise<SystemDetail | null>>();
 
-  document.body.append(toastContainer);
-  for (const modal of [formModal, removeModal, setupModals.ssh, setupModals.rdp]) {
+  document.body.append(viewModal);
+  viewModal.addEventListener("hidden.bs.modal", () => {
+    if (openUpdateAfterClose && viewSystem && viewTrigger) {
+      const detail = opened.get(viewSystem.id);
+      const system = viewSystem;
+      const trigger = viewTrigger;
+      openUpdateAfterClose = false;
+      if (detail) {
+        presentUpdate(system, detail, trigger);
+        return;
+      }
+    }
+    const target = focusAfterClose && focusAfterClose.isConnected ? focusAfterClose : heading;
+    focusAfterClose = null;
+    target.focus();
+  });
+  viewUpdate.addEventListener("click", () => {
+    if (!viewSystem || !opened.has(viewSystem.id)) {
+      return;
+    }
+    openUpdateAfterClose = true;
+    bootstrap.Modal.getOrCreateInstance(viewModal).hide();
+  });
+
+  for (const modal of [formModal, removeModal, remoteModal, setupModals.ssh, setupModals.rdp]) {
     document.body.append(modal);
     modal.addEventListener("hide.bs.modal", (event) => {
       if (busyModal === modal) {
@@ -286,22 +319,34 @@
     if (!(target instanceof Element)) {
       return;
     }
-    const remoteControl = target.closest<HTMLElement>("[data-remote-action]");
-    if (remoteControl) {
-      handleRemoteAction(remoteControl, event);
-      return;
-    }
-    const button = target.closest<HTMLButtonElement>("button[data-row-action]");
-    const row = button?.closest<HTMLTableRowElement>("tr[data-system-id]");
+    const row = target.closest<HTMLTableRowElement>("tr[data-system-id]");
     const record = row ? records.get(Number(row.dataset.systemId)) : undefined;
-    if (!button || !record) {
+    if (!row || !record) {
       return;
     }
-    if (button.dataset.rowAction === "edit") {
-      openEdit(record, button);
-    } else if (button.dataset.rowAction === "remove") {
-      openRemove(record, button);
+    const copyControl = target.closest<HTMLElement>("[data-remote-action='copy']");
+    if (copyControl) {
+      handleRemoteAction(copyControl, event);
+      return;
     }
+    const action = target.closest<HTMLButtonElement>("button[data-row-action]");
+    if (action?.dataset.rowAction === "remove") {
+      openRemove(record, action);
+      return;
+    }
+    if (action?.dataset.rowAction === "edit") {
+      void openView(record, action);
+      return;
+    }
+    if (target.closest(".systems-remote-cell, [data-row-action='remote']")) {
+      event.preventDefault();
+      void openRemotePopup(record, action ?? row);
+      return;
+    }
+    if (target.closest("td[data-label='Actions']")) {
+      return;
+    }
+    void revealRow(record);
   });
 
   for (const toggle of Array.from(formModal.querySelectorAll<HTMLButtonElement>(".password-toggle"))) {
@@ -330,7 +375,7 @@
   });
   formRetry.addEventListener("click", () => {
     if (editing) {
-      void loadDetails(editing);
+      void reopenDetails(editing);
     }
   });
   removeForm.addEventListener("submit", (event) => {
@@ -340,9 +385,7 @@
 
   for (const button of Array.from(document.querySelectorAll<HTMLButtonElement>("[data-action='link-setup']"))) {
     button.addEventListener("click", () => {
-      const trigger = button === toastSetup ? toastTrigger : button;
-      bootstrap.Toast.getOrCreateInstance(toast).hide();
-      openLinkSetup(button.dataset.setup === "rdp" ? "rdp" : "ssh", trigger ?? button);
+      openLinkSetup(button.dataset.setup === "rdp" ? "rdp" : "ssh", button);
     });
   }
   linkToggles.ssh.addEventListener("change", () => {
@@ -357,8 +400,6 @@
       ? "RDP entries now open Remote Desktop."
       : "RDP entries now copy the host instead of opening Remote Desktop.";
   });
-  toastPassword.addEventListener("click", () => void copyToastPassword());
-
   void load();
 
   function applySearch(): void {
@@ -441,6 +482,7 @@
   }
 
   function render(response: ListResponse): void {
+    opened.clear();
     hasRendered = true;
     loadingState.hidden = true;
     loadErrorState.hidden = true;
@@ -503,6 +545,8 @@
     if (remote) {
       if (system.remote_access.length === 0) {
         remote.replaceWith(notAvailable());
+      } else if (system.details_hidden) {
+        remote.append(buildConcealedRemote(system));
       } else {
         system.remote_access.forEach((entry, index) => remote.append(buildRemoteItem(system, entry, index)));
       }
@@ -512,7 +556,10 @@
       const cell = row.querySelector<HTMLElement>(`[data-field="${field}"]`);
       const value = system[field];
       if (!cell) continue;
-      if (value) {
+      if (system.details_hidden && value) {
+        cell.closest("td")?.setAttribute("title", `Show ${FIELD_LABELS[field]} for ${system.name}`);
+        cell.replaceWith(concealedMark());
+      } else if (value) {
         setBreakableText(cell, value);
         cell.title = value;
       } else {
@@ -520,9 +567,39 @@
       }
     }
 
-    row.querySelector('[data-row-action="edit"]')?.setAttribute("aria-label", `View or update ${system.name}`);
+    row.querySelector('[data-row-action="edit"]')?.setAttribute("aria-label", `View ${system.name}`);
     row.querySelector('[data-row-action="remove"]')?.setAttribute("aria-label", `Remove ${system.name}`);
     return row;
+  }
+
+  function buildConcealedRemote(system: SystemSummary): HTMLLIElement {
+    const item = document.createElement("li");
+    item.className = "systems-remote-item";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "systems-hidden-value";
+    button.dataset.rowAction = "remote";
+    button.setAttribute("aria-label", `Show remote access for ${system.name}`);
+    for (const entry of system.remote_access) {
+      const tag = document.createElement("span");
+      tag.className = `systems-remote-tag is-${entry.type}`;
+      tag.textContent = entry.label;
+      button.append(tag);
+    }
+    const dots = document.createElement("span");
+    dots.className = "systems-mono";
+    dots.setAttribute("aria-hidden", "true");
+    dots.textContent = "••••••";
+    button.append(dots);
+    item.append(button);
+    return item;
+  }
+
+  function concealedMark(): HTMLElement {
+    const mark = document.createElement("span");
+    mark.className = "systems-hidden-value";
+    mark.textContent = "••••••";
+    return mark;
   }
 
   function buildRemoteItem(system: SystemSummary, entry: RemoteAccess, index: number): HTMLLIElement {
@@ -530,16 +607,11 @@
     item.className = "systems-remote-item";
     item.dataset.remoteIndex = String(index);
 
-    const href = launchHref(entry);
-    let control: HTMLElement;
-    if (href) {
-      const link = document.createElement("a");
-      link.href = href;
-      control = link;
-    } else {
-      control = document.createElement("span");
-    }
-    control.className = href ? "systems-remote-launch" : "systems-remote-static";
+    const control = document.createElement("button");
+    control.type = "button";
+    control.className = "systems-remote-launch";
+    control.dataset.rowAction = "remote";
+    control.setAttribute("aria-label", `Show remote access for ${system.name}`);
 
     const tag = document.createElement("span");
     tag.className = `systems-remote-tag is-${entry.type}`;
@@ -547,15 +619,8 @@
     const value = document.createElement("span");
     value.className = "systems-mono";
     value.textContent = entry.value;
+    value.title = entry.value;
     control.append(tag, value);
-
-    if (href) {
-      control.dataset.remoteAction = "launch";
-      control.setAttribute("aria-label", launchLabel(system, entry));
-      control.title = launchHint(entry);
-    } else {
-      value.title = entry.value;
-    }
 
     const copy = document.createElement("button");
     copy.type = "button";
@@ -569,13 +634,32 @@
     return item;
   }
 
-  function recordRemoteDeskOpen(system: SystemSummary, entry: RemoteAccess): void {
-    void fetch(cmsApi.url(`/systems/${system.id}/remote-desks`), {
-      method: "POST",
-      headers: cmsApi.headers({ "Content-Type": "application/json" }),
-      body: JSON.stringify({ type: entry.type }),
-      keepalive: true,
-    }).catch(() => undefined);
+  async function recordCredentialAccess(systemId: number, movement: "viewed" | "revealed" | "remote_viewed" | "password_copied", type?: RemoteType): Promise<boolean> {
+    try {
+      const response = await fetch(cmsApi.url(`/systems/${systemId}/credential-access`), {
+        method: "POST",
+        headers: cmsApi.headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify(type ? { movement, type } : { movement }),
+        keepalive: true,
+      });
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  async function recordRemoteDeskOpen(system: SystemSummary, entry: RemoteAccess): Promise<boolean> {
+    try {
+      const response = await fetch(cmsApi.url(`/systems/${system.id}/remote-desks`), {
+        method: "POST",
+        headers: cmsApi.headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ type: entry.type }),
+        keepalive: true,
+      });
+      return response.ok;
+    } catch {
+      return false;
+    }
   }
 
   function handleRemoteAction(control: HTMLElement, event: MouseEvent): void {
@@ -594,56 +678,30 @@
     if (!launchHref(entry)) {
       return;
     }
-    recordRemoteDeskOpen(system, entry);
-    toastTrigger = control;
+    event.preventDefault();
+    void openConfirmedRemoteDesk(system, entry);
+  }
 
-    if (entry.type === "rdp") {
-      const address = entry.address.trim();
-      const username = entry.username?.trim();
-      const signIn = username ? ` and sign in as ${username}` : "";
-      const rdpLinksEnabled = linksEnabled("rdp");
-      if (!rdpLinksEnabled) {
-        event.preventDefault();
-      }
-      void copyText(address).then((copied) => {
-        if (rdpLinksEnabled) {
-          showLaunchToast(system, entry, "Opening Remote Desktop",
-            `Connecting to ${address}${username ? ` as ${username}` : ""}. Remote Desktop asks for the password when it connects.${copied ? " The host is also copied." : ""}`);
-          return;
-        }
-        const setupHint = IS_MAC ? "" : " Set up one-click RDP to open Remote Desktop for you.";
-        showLaunchToast(system, entry, copied ? "RDP host copied" : "RDP host",
-          copied
-            ? `Paste ${address} into Remote Desktop Connection${signIn}.${setupHint}`
-            : `Enter ${address} in Remote Desktop Connection${signIn}.${setupHint}`,
-          IS_MAC ? null : "rdp");
-      });
+  async function openConfirmedRemoteDesk(system: SystemSummary, entry: RemoteAccess): Promise<void> {
+    const recorded = await recordRemoteDeskOpen(system, entry);
+    if (!recorded) {
+      live.textContent = "The remote desk wasn't opened. Try again.";
       return;
     }
-
-    if (entry.type !== "ssh") {
-      showLaunchToast(system, entry, `Opening ${entry.label}`,
-        `Connecting to ${entry.value}. If ${entry.label} doesn't open, check that it's installed on this computer.`);
+    const href = launchHref(entry);
+    const followLink = entry.type === "anydesk" || entry.type === "rustdesk"
+      || (entry.type === "rdp" && linksEnabled("rdp"))
+      || (entry.type === "ssh" && linksEnabled("ssh"));
+    if (followLink && href) {
+      window.location.href = href;
+      live.textContent = `Opening ${entry.label} for ${system.name}.`;
       return;
     }
-
-    const ssh = sshTarget(entry) as SshTarget;
-    const sshLinksEnabled = linksEnabled("ssh");
-    if (!sshLinksEnabled) {
-      event.preventDefault();
-    }
-    void copyText(ssh.command).then((copied) => {
-      if (sshLinksEnabled) {
-        showLaunchToast(system, entry, `Opening ${TERMINAL_NAME}`,
-          `Connecting with ${ssh.command}. ssh asks for the password in the ${TERMINAL_NAME} window.${copied ? " The command is also copied." : ""}`);
-      } else {
-        showLaunchToast(system, entry, copied ? "SSH command copied" : "SSH command",
-          copied
-            ? `Paste ${ssh.command} into ${TERMINAL_NAME} to connect. Set up one-click SSH to open ${TERMINAL_NAME} for you.`
-            : `Run ${ssh.command} in ${TERMINAL_NAME} to connect. Set up one-click SSH to open ${TERMINAL_NAME} for you.`,
-          "ssh");
-      }
-    });
+    live.textContent = entry.type === "ssh"
+      ? `Set up one-click SSH to open ${TERMINAL_NAME}, or run ssh from the host shown here.`
+      : entry.type === "rdp"
+        ? "Set up one-click RDP to open Remote Desktop, or enter the host shown here."
+        : `If ${entry.label} doesn't open, check that it's installed on this computer.`;
   }
 
   function launchHref(entry: RemoteAccess): string | null {
@@ -718,6 +776,30 @@
     return (entry.type === "anydesk" ? ANYDESK_ID : RUSTDESK_ID).test(id) ? id : entry.address.trim();
   }
 
+  async function copySecret(button: HTMLButtonElement, secret: string, label: string, beforeCopy?: () => Promise<boolean>): Promise<void> {
+    if (button.classList.contains("is-copied")) {
+      return;
+    }
+    if (beforeCopy && !await beforeCopy()) {
+      live.textContent = "The password wasn't copied. Try again.";
+      return;
+    }
+    const previous = button.getAttribute("aria-label") ?? "";
+    const copied = await copyText(secret);
+    live.textContent = copied ? `${label} copied.` : "Couldn't copy. Select the text and copy it yourself.";
+    if (!copied) {
+      return;
+    }
+    button.classList.add("is-copied");
+    button.innerHTML = COPIED_ICON;
+    button.setAttribute("aria-label", "Copied");
+    window.setTimeout(() => {
+      button.classList.remove("is-copied");
+      button.innerHTML = COPY_ICON;
+      button.setAttribute("aria-label", previous);
+    }, COPIED_RESET_MS);
+  }
+
   async function copyRemote(button: HTMLButtonElement, entry: RemoteAccess): Promise<void> {
     if (button.classList.contains("is-copied")) {
       return;
@@ -740,67 +822,309 @@
     }, COPIED_RESET_MS);
   }
 
-  function showLaunchToast(system: SystemSummary, entry: RemoteAccess, title: string, message: string, offerSetup: LinkHelper | null = null): void {
-    toastTarget = { system, entry };
-    toastTag.className = `systems-remote-tag is-${entry.type}`;
-    toastTag.textContent = entry.label;
-    toastTitle.textContent = title;
-    toastMessage.textContent = message;
-    toastStatus.textContent = "";
-    toastStatus.hidden = true;
-    toastPassword.disabled = false;
-    setButtonLabel(toastPassword, `Copy ${entry.label} password`);
-    toastSetup.hidden = offerSetup === null;
-    if (offerSetup !== null) {
-      toastSetup.dataset.setup = offerSetup;
-      toastSetup.textContent = `Set up one-click ${offerSetup.toUpperCase()}`;
+  async function requestGrant(system: SystemSummary, action: "details" | "update" | "password"): Promise<string | null> {
+    const auth = window.CmsRemoteDeskAuth;
+    if (!auth) {
+      showError("Confirmation didn't load. Reload the page and try again.");
+      return null;
     }
-    live.textContent = `${title}. ${message}`;
-    bootstrap.Toast.getOrCreateInstance(toast, { delay: LAUNCH_TOAST_MS }).show();
+    return auth.confirm({ systemId: system.id, systemName: system.name, action });
   }
 
-  async function copyToastPassword(): Promise<void> {
-    if (!toastTarget || toastPassword.disabled) {
-      return;
+  async function ensureDetail(system: SystemSummary, action: "details" | "update"): Promise<SystemDetail | null> {
+    const cached = opened.get(system.id);
+    if (cached) {
+      return cached;
     }
-    const { system, entry } = toastTarget;
-    toastPassword.disabled = true;
-    setToastStatus("Getting the password…");
-
-    const result = await fetchDetails(system.id);
-    if (toastTarget?.system !== system || toastTarget.entry !== entry) {
-      return;
+    const pending = detailRequests.get(system.id);
+    if (pending) {
+      return pending;
     }
-    toastPassword.disabled = false;
+    const request = loadUnlocked(system, action);
+    detailRequests.set(system.id, request);
+    try {
+      return await request;
+    } finally {
+      detailRequests.delete(system.id);
+    }
+  }
 
+  async function loadUnlocked(system: SystemSummary, action: "details" | "update"): Promise<SystemDetail | null> {
+    const grant = await requestGrant(system, action);
+    if (!grant) {
+      return null;
+    }
+    const result = await fetchDetails(system.id, grant);
     if (result.status === 200 && result.payload.system) {
-      const password = result.payload.system[PASSWORD_FIELDS[entry.type]];
-      if (!password) {
-        setToastStatus(`No ${entry.label} password is saved for ${system.name}.`);
-      } else if (await copyText(password)) {
-        setToastStatus(`${entry.label} password copied. Paste it when you're asked to sign in.`);
-      } else {
-        setToastStatus("Couldn't copy the password. Open View / Update to see it.");
-      }
-      return;
+      opened.set(system.id, result.payload.system);
+      return result.payload.system;
     }
     if (result.status === 404) {
-      setToastStatus("That system no longer exists. The list has been refreshed.");
+      showError("That system no longer exists.");
       void load();
+      return null;
+    }
+    showError(describeFailure(result.status, result.payload, "Couldn't show these details"));
+    return null;
+  }
+
+  async function revealRow(system: SystemSummary): Promise<void> {
+    if (!system.details_hidden) {
       return;
     }
-    setToastStatus(result.status === -1
-      ? "Couldn't get the password. The server took too long to respond. Try again."
-      : describeFailure(result.status, result.payload, "Couldn't get the password"));
+    const detail = await ensureDetail(system, "details");
+    if (!detail) {
+      return;
+    }
+    if (!await recordCredentialAccess(system.id, "revealed")) {
+      showError("The row wasn't revealed. Try again.");
+      return;
+    }
+    const current = records.get(system.id) ?? system;
+    const next = summaryFromDetail(current, detail);
+    records.set(system.id, next);
+    replaceRow(next);
+    live.textContent = `Details shown for ${system.name}.`;
   }
 
-  function setToastStatus(message: string): void {
-    toastStatus.textContent = message;
-    toastStatus.hidden = false;
-    live.textContent = message;
+  async function openRemotePopup(system: SystemSummary, trigger: HTMLElement): Promise<void> {
+    focusAfterClose = trigger instanceof HTMLElement ? trigger : null;
+    const detail = await ensureDetail(system, "details");
+    if (!detail) {
+      return;
+    }
+    if (!await recordCredentialAccess(system.id, "remote_viewed")) {
+      showError("The remote desk credentials weren't opened. Try again.");
+      return;
+    }
+    remoteTitle.textContent = system.name;
+    renderRemoteBody(system, detail);
+    bootstrap.Modal.getOrCreateInstance(remoteModal).show();
   }
 
-  async function fetchDetails(systemId: number): Promise<SendResult> {
+  function renderRemoteBody(system: SystemSummary, detail: SystemDetail): void {
+    remoteBody.replaceChildren();
+    const entries = summaryFromDetail(system, detail).remote_access;
+    if (entries.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "text-sm text-secondary mb-0";
+      empty.textContent = "No remote access is registered for this system.";
+      remoteBody.append(empty);
+      return;
+    }
+    for (const entry of entries) {
+      const passwordField = PASSWORD_FIELDS[entry.type];
+      const facts: Fact[] = [{ label: entry.type === "anydesk" || entry.type === "rustdesk" ? "ID" : "Host", value: entry.address }];
+      if (entry.username) {
+        facts.push({ label: "Username", value: entry.username });
+      }
+      const password = detail[passwordField];
+      facts.push({
+        label: "Password",
+        value: password || "Not saved",
+        secret: Boolean(password),
+        copy: password,
+        beforeCopy: () => recordCredentialAccess(system.id, "password_copied", entry.type),
+      });
+      const section = document.createElement("section");
+      section.className = "systems-view-group";
+      const group = factGroup(entry.label, facts);
+      if (group) {
+        section.append(group);
+      }
+      if (launchHref(entry)) {
+        const connect = document.createElement("button");
+        connect.type = "button";
+        connect.className = "btn btn-sm bg-gradient-dark mb-0 systems-remote-connect";
+        connect.textContent = `Connect with ${entry.label}`;
+        connect.setAttribute("aria-label", launchLabel(system, entry));
+        connect.title = launchHint(entry);
+        connect.addEventListener("click", () => void openConfirmedRemoteDesk(system, entry));
+        section.append(connect);
+      }
+      remoteBody.append(section);
+    }
+  }
+
+  async function openView(system: SystemSummary, trigger: HTMLElement): Promise<void> {
+    focusAfterClose = trigger;
+    viewTrigger = trigger;
+    const detail = await ensureDetail(system, "update");
+    if (!detail) {
+      return;
+    }
+    if (!await recordCredentialAccess(system.id, "viewed")) {
+      showError("The credential details weren't opened. Try again.");
+      return;
+    }
+    viewSystem = records.get(system.id) ?? system;
+    viewTitle.textContent = system.name;
+    renderCredentialSummary(detail);
+    bootstrap.Modal.getOrCreateInstance(viewModal).show();
+  }
+
+  function renderCredentialSummary(detail: SystemDetail): void {
+    const environment = detail.environment;
+    const environmentLabel = environment === "production" || environment === "test" || environment === "legacy"
+      ? ENVIRONMENTS[environment]
+      : null;
+    viewBody.replaceChildren();
+    const groups: { title: string; facts: Fact[] }[] = [
+      { title: "System", facts: [
+        { label: "Environment", value: environmentLabel },
+        { label: "Description", value: detail.description },
+      ] },
+      { title: "AnyDesk", facts: [
+        { label: "ID", value: detail.anydesk_id },
+        { label: "Password", value: detail.anydesk_password, secret: true },
+      ] },
+      { title: "RustDesk", facts: [
+        { label: "ID", value: detail.rustdesk_id },
+        { label: "Password", value: detail.rustdesk_password, secret: true },
+      ] },
+      { title: "RDP", facts: [
+        { label: "Host", value: detail.rdp_host },
+        { label: "Username", value: detail.rdp_username },
+        { label: "Password", value: detail.rdp_password, secret: true },
+      ] },
+      { title: "SSH", facts: [
+        { label: "Host", value: detail.ssh_host },
+        { label: "Username", value: detail.ssh_username },
+        { label: "Password", value: detail.ssh_password, secret: true },
+      ] },
+      { title: "Local IP", facts: [
+        { label: "Address", value: detail.local_ip },
+        { label: "Username", value: detail.local_username },
+        { label: "Password", value: detail.local_password, secret: true },
+      ] },
+      { title: "MySQL", facts: [
+        { label: "Address", value: detail.mysql_host },
+        { label: "Username", value: detail.mysql_username },
+        { label: "Password", value: detail.mysql_password, secret: true },
+      ] },
+      { title: "Domain", facts: [
+        { label: "Name", value: detail.domain },
+        { label: "Username", value: detail.domain_username },
+        { label: "Password", value: detail.domain_password, secret: true },
+      ] },
+      { title: "VM", facts: [
+        { label: "Host", value: detail.vm_host },
+        { label: "Username", value: detail.vm_username },
+        { label: "Password", value: detail.vm_password, secret: true },
+      ] },
+      { title: "Notes", facts: [{ label: "Notes", value: detail.notes }] },
+    ];
+    let shown = 0;
+    for (const group of groups) {
+      const section = factGroup(group.title, group.facts);
+      if (!section) continue;
+      shown += 1;
+      viewBody.append(section);
+    }
+    if (shown === 0) {
+      const empty = document.createElement("p");
+      empty.className = "text-sm text-secondary mb-0";
+      empty.textContent = "No credentials are saved for this system yet.";
+      viewBody.append(empty);
+    }
+  }
+
+  function factGroup(title: string, facts: Fact[]): HTMLElement | null {
+    const filled = facts.filter((fact) => fact.value);
+    if (filled.length === 0) {
+      return null;
+    }
+    const section = document.createElement("section");
+    section.className = "systems-view-group";
+    const heading = document.createElement("h6");
+    heading.className = "systems-section-title";
+    heading.textContent = title;
+    const list = document.createElement("dl");
+    list.className = "systems-facts";
+    for (const fact of filled) {
+      const row = document.createElement("div");
+      const term = document.createElement("dt");
+      term.textContent = fact.label;
+      const value = document.createElement("dd");
+      if (fact.label === "Environment") {
+        const key = (Object.keys(ENVIRONMENTS) as Array<keyof typeof ENVIRONMENTS>).find((name) => ENVIRONMENTS[name] === fact.value);
+        const badge = document.createElement("span");
+        badge.className = key ? `systems-env is-${key}` : "systems-env";
+        badge.textContent = fact.value ?? "";
+        value.append(badge);
+        row.append(term, value);
+        list.append(row);
+        continue;
+      }
+      if (fact.secret || fact.label !== "Description" && fact.label !== "Notes") {
+        value.className = "systems-mono";
+      }
+      if (fact.copy) {
+        const line = document.createElement("span");
+        line.className = "systems-secret-line";
+        const text = document.createElement("span");
+        text.textContent = fact.value ?? "";
+        const copy = document.createElement("button");
+        copy.type = "button";
+        copy.className = "systems-remote-copy";
+        copy.innerHTML = COPY_ICON;
+        copy.setAttribute("aria-label", `Copy ${title} password`);
+        copy.title = "Copy password";
+        const secret = fact.copy;
+        copy.addEventListener("click", () => void copySecret(copy, secret, `${title} password`, fact.beforeCopy));
+        line.append(text, copy);
+        value.append(line);
+      } else {
+        value.textContent = fact.value ?? "";
+      }
+      row.append(term, value);
+      list.append(row);
+    }
+    section.append(heading, list);
+    return section;
+  }
+
+  function summaryFromDetail(system: SystemSummary, detail: SystemDetail): SystemSummary {
+    const remote: RemoteAccess[] = [];
+    addRemote(remote, "anydesk", "AnyDesk", detail.anydesk_id, detail.anydesk_id, null);
+    addRemote(remote, "rustdesk", "RustDesk", detail.rustdesk_id, detail.rustdesk_id, null);
+    addRemote(remote, "rdp", "RDP", detail.rdp_host, detail.rdp_host, detail.rdp_username);
+    const sshValue = detail.ssh_host && detail.ssh_username ? `${detail.ssh_username}@${detail.ssh_host}` : detail.ssh_host;
+    addRemote(remote, "ssh", "SSH", sshValue, detail.ssh_host, detail.ssh_username);
+    const environment = detail.environment;
+    return {
+      ...system,
+      description: detail.description,
+      environment: environment === "production" || environment === "test" || environment === "legacy" ? environment : null,
+      remote_access: remote,
+      local_ip: detail.local_ip,
+      mysql_host: detail.mysql_host,
+      domain: detail.domain,
+      vm_host: detail.vm_host,
+      details_hidden: false,
+      created_at: detail.created_at,
+      updated_at: detail.updated_at,
+    };
+  }
+
+  function addRemote(remote: RemoteAccess[], type: RemoteType, label: string, value: string | null, address: string | null, username: string | null): void {
+    if (!address) {
+      return;
+    }
+    remote.push({ type, label, value: value ?? address, address, username });
+  }
+
+  function replaceRow(system: SystemSummary): HTMLTableRowElement | null {
+    const existing = rowsBody.querySelector<HTMLTableRowElement>(`tr[data-system-id="${CSS.escape(String(system.id))}"]`);
+    if (!existing) {
+      return null;
+    }
+    const next = buildRow(system);
+    existing.replaceWith(next);
+    return next;
+  }
+
+  async function fetchDetails(systemId: number, grant: string): Promise<SendResult> {
     const controller = new AbortController();
     let timedOut = false;
     const timer = window.setTimeout(() => {
@@ -808,7 +1132,10 @@
       controller.abort();
     }, REQUEST_TIMEOUT_MS);
     try {
-      const response = await fetch(`${baseUrl}/${systemId}`, { signal: controller.signal, headers: cmsApi.headers() });
+      const response = await fetch(`${baseUrl}/${systemId}`, {
+        signal: controller.signal,
+        headers: cmsApi.headers({ "X-Credential-Grant": grant }),
+      });
       return { status: response.status, payload: (await readJson(response)) as ApiPayload };
     } catch {
       return { status: timedOut ? -1 : 0, payload: {} };
@@ -961,19 +1288,29 @@
     bootstrap.Modal.getOrCreateInstance(formModal).show();
   }
 
-  function openEdit(system: SystemSummary, trigger: HTMLElement): void {
+  function presentUpdate(system: SystemSummary, detail: SystemDetail, trigger: HTMLElement): void {
     editing = system;
     focusAfterClose = trigger;
     resetForm();
     formTitle.textContent = system.name;
-    formMeta.hidden = true;
+    fillForm(detail);
+    showFormSection("fields");
+    formSubmit.hidden = false;
+    formSubmit.disabled = false;
     formSubmit.dataset.busyLabel = "Saving…";
     setButtonLabel(formSubmit, "Save changes");
     bootstrap.Modal.getOrCreateInstance(formModal).show();
-    void loadDetails(system);
   }
 
-  async function loadDetails(system: SystemSummary): Promise<void> {
+  async function reopenDetails(system: SystemSummary): Promise<void> {
+    const grant = await requestGrant(system, "update");
+    if (!grant || editing !== system) {
+      return;
+    }
+    void loadDetails(system, grant);
+  }
+
+  async function loadDetails(system: SystemSummary, grant: string): Promise<void> {
     detailController?.abort();
     const controller = new AbortController();
     detailController = controller;
@@ -990,7 +1327,10 @@
     let status: number;
     let payload: ApiPayload;
     try {
-      const response = await fetch(`${baseUrl}/${system.id}`, { signal: controller.signal, headers: cmsApi.headers() });
+      const response = await fetch(`${baseUrl}/${system.id}`, {
+        signal: controller.signal,
+        headers: cmsApi.headers({ "X-Credential-Grant": grant }),
+      });
       status = response.status;
       payload = (await readJson(response)) as ApiPayload;
     } catch {
@@ -1144,12 +1484,12 @@
     removing = system;
     focusAfterClose = trigger;
     hideAlert(removeAlert);
-    const address = system.local_ip ?? system.domain;
+    const address = system.details_hidden ? null : (system.local_ip ?? system.domain);
     for (const element of Array.from(removeModal.querySelectorAll<HTMLElement>("[data-target]"))) {
       if (element.dataset.target === "name") {
         element.textContent = system.name;
       } else {
-        element.textContent = address ?? "No local IP or domain recorded";
+        element.textContent = system.details_hidden ? "Address hidden" : address ?? "No local IP or domain recorded";
         element.classList.toggle("systems-mono", address !== null);
       }
     }

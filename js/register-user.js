@@ -2,7 +2,6 @@
 (() => {
     var _a;
     const FIELDS = ["first_name", "middle_name", "last_name", "suffix", "email", "username", "role", "password", "password_confirmation"];
-    const ROLES = { administrator: "Administrator", user: "User" };
     const NAME_PARTS = ["first_name", "middle_name", "last_name", "suffix"];
     const FULL_NAME_MAX = 100;
     const FULL_NAME_TOO_LONG = "The full name (first, middle, and last name plus suffix) must be 100 characters or fewer in total.";
@@ -41,6 +40,9 @@
         }
         inputs[name] = element;
     }
+    const roleCatalog = new Map();
+    const roleHint = document.getElementById("role-hint");
+    const roleSelect = inputs.role;
     const touched = new Set();
     let submitting = false;
     for (const name of FIELDS) {
@@ -73,6 +75,8 @@
             }
         });
     }
+    roleSelect.addEventListener("change", updateRoleHint);
+    void loadRoleOptions();
     for (const toggle of toggles) {
         const target = document.getElementById((_a = toggle.dataset.passwordToggle) !== null && _a !== void 0 ? _a : "");
         if (!(target instanceof HTMLInputElement)) {
@@ -239,7 +243,9 @@
                     return "Enter a valid email address, like name@example.com.";
                 return null;
             case "role":
-                return value in ROLES ? null : "Choose Administrator or User.";
+                if (roleSelect.disabled)
+                    return "Roles are still loading.";
+                return roleCatalog.has(value) ? null : "Choose a role.";
             case "username":
                 if (value === "")
                     return "Choose a username.";
@@ -333,7 +339,7 @@
         for (const key of ["name", "email", "username", "role"]) {
             const target = success.querySelector(`[data-registered="${key}"]`);
             if (target) {
-                target.textContent = key === "role" && user.role in ROLES ? ROLES[user.role] : user[key];
+                target.textContent = key === "role" ? roleName(user.role) : user[key];
             }
         }
         resetForm();
@@ -375,5 +381,96 @@
         catch (_a) {
             return {};
         }
+    }
+    function roleName(code) {
+        const role = roleCatalog.get(code);
+        return role && role.name ? role.name : code;
+    }
+    function updateRoleHint() {
+        if (!(roleHint instanceof HTMLElement))
+            return;
+        const role = roleCatalog.get(roleSelect.value);
+        roleHint.textContent = role && role.description
+            ? role.description
+            : "Choose the access this person gets. Permissions for each role are set on User roles.";
+    }
+    function fillRoleOptions(list) {
+        roleCatalog.clear();
+        roleSelect.replaceChildren();
+        let userOption = null;
+        let firstOption = null;
+        for (const role of list) {
+            if (!role || typeof role.code !== "string" || role.code === "" || typeof role.name !== "string")
+                continue;
+            roleCatalog.set(role.code, role);
+            const option = document.createElement("option");
+            option.value = role.code;
+            option.textContent = role.name;
+            if (!firstOption)
+                firstOption = option;
+            if (role.code === "user")
+                userOption = option;
+            roleSelect.append(option);
+        }
+        const selected = userOption || firstOption;
+        if (selected)
+            selected.defaultSelected = true;
+        if (roleCatalog.size === 0) {
+            const option = document.createElement("option");
+            option.value = "";
+            option.textContent = "No roles yet";
+            roleSelect.append(option);
+            roleSelect.disabled = true;
+            showFieldError("role", "No roles are registered yet. Create one on User roles first.");
+            return;
+        }
+        roleSelect.disabled = false;
+        roleSelect.value = selected.value;
+        showFieldError("role", null);
+        updateRoleHint();
+    }
+    async function loadRoleOptions() {
+        const collected = [];
+        let page = 1;
+        let lastPage = 1;
+        try {
+            while (page <= lastPage && page <= 20) {
+                const controller = new AbortController();
+                const timer = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+                let response;
+                let payload;
+                try {
+                    response = await fetch(window.CmsApi.url("/user-roles?page=" + page), {
+                        signal: controller.signal,
+                        headers: window.CmsApi.headers(),
+                    });
+                    payload = await readPayload(response);
+                }
+                finally {
+                    window.clearTimeout(timer);
+                }
+                if (response.status !== 200 || !payload || !Array.isArray(payload.data)) {
+                    roleSelect.replaceChildren();
+                    const option = document.createElement("option");
+                    option.value = "";
+                    option.textContent = "Couldn't load roles";
+                    roleSelect.append(option);
+                    roleSelect.disabled = true;
+                    showFieldError("role", response.status === 403
+                        ? "You don't have permission to view user roles."
+                        : "Couldn't load user roles. Refresh the page and try again.");
+                    return;
+                }
+                collected.push(...payload.data);
+                lastPage = Number(payload.meta && payload.meta.last_page) || 1;
+                page += 1;
+            }
+        }
+        catch (_b) {
+            roleSelect.disabled = true;
+            showFieldError("role", "Couldn't load user roles. Refresh the page and try again.");
+            return;
+        }
+        fillRoleOptions(collected);
     }
 })();

@@ -1,0 +1,2378 @@
+/* Dashboard desk. Scoped to this page so the other screens keep their shell. */
+
+html:has(body.desk) {
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body.desk {
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+  --desk-bg: #fafafa;
+  --desk-side: #ffffff;
+  --desk-card: #ffffff;
+  --desk-raised: #f4f4f5;
+  --desk-line: rgba(23, 23, 23, 0.08);
+  --desk-text: #171717;
+  --desk-secondary: #525252;
+  --desk-muted: #737373;
+  --desk-accent: #c2410c;
+  --desk-up: #16a34a;
+  --desk-down: #dc2626;
+  --desk-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  background: var(--desk-bg) !important;
+  color: var(--desk-text);
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+body.desk h1,
+body.desk h2,
+body.desk h3,
+body.desk h4,
+body.desk h5,
+body.desk h6,
+body.desk .font-weight-bolder,
+body.desk .font-weight-bold {
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+body.desk .text-uppercase {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Shell */
+
+@media (min-width: 1200px) {
+  body.desk #sidenav-main.sidenav {
+    width: 260px !important;
+    max-width: 260px !important;
+    margin: 0 !important;
+    top: 0 !important;
+    bottom: 0;
+    left: 0;
+    border-radius: 0 !important;
+    transform: none !important;
+  }
+
+  body.desk.g-sidenav-show .sidenav.fixed-start ~ .main-content {
+    margin-left: 260px !important;
+  }
+}
+
+body.desk #sidenav-main {
+  height: 100vh;
+  overflow: hidden;
+  background: var(--desk-side, var(--desk-bg)) !important;
+  box-shadow: none !important;
+  border-right: 1px solid var(--desk-line) !important;
+}
+
+body.desk .main-content {
+  display: block;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 100vh;
+  overflow: visible !important;
+  background: var(--desk-bg);
+  border-radius: 0 !important;
+}
+
+body.desk .sidenav-header {
+  height: auto;
+  min-height: 0;
+  padding: 20px 16px 8px;
+}
+
+body.desk .sidenav .navbar-brand.cms-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  white-space: normal;
+}
+
+body.desk .cms-brand span {
+  font-size: inherit;
+  line-height: inherit;
+  white-space: normal;
+}
+
+body.desk .desk-mark {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--desk-accent);
+}
+
+body.desk .desk-word {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+body.desk .desk-word-name {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--desk-text);
+}
+
+body.desk .desk-word-sub {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  color: var(--desk-muted);
+}
+
+body.desk #sidenav-main .horizontal {
+  display: none;
+}
+
+body.desk #sidenav-collapse-main {
+  padding: 16px 0 8px;
+}
+
+body.desk #sidenav-main .navbar-nav {
+  gap: 0;
+}
+
+body.desk #sidenav-main .nav-item {
+  margin: 0;
+}
+
+body.desk #sidenav-main .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  margin: 0 12px 4px;
+  padding: 0 8px !important;
+  border-radius: 8px;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--desk-secondary) !important;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  transition: background-color 160ms var(--desk-ease), color 160ms var(--desk-ease), transform 120ms var(--desk-ease);
+}
+
+body.desk #sidenav-main .nav-link:hover {
+  background: var(--desk-raised) !important;
+  color: var(--desk-text) !important;
+}
+
+body.desk #sidenav-main .nav-link.active,
+body.desk #sidenav-main .nav-link.active:hover {
+  background: var(--desk-raised) !important;
+  background-image: none !important;
+  color: var(--desk-text) !important;
+  box-shadow: inset 0 0 0 1px var(--desk-line) !important;
+}
+
+body.desk #sidenav-main .nav-link:focus-visible {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+}
+
+body.desk .desk-nav-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--desk-muted);
+}
+
+body.desk #sidenav-main .nav-link.active .desk-nav-icon {
+  color: var(--desk-text);
+}
+
+body.desk .nav-link-text {
+  margin: 0 !important;
+  transition: none;
+}
+
+body.desk .sidenav-theme {
+  padding: 8px 12px 16px;
+}
+
+body.desk .sidenav-theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-card);
+  color: var(--desk-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  box-shadow: none;
+  transition: background-color 160ms var(--desk-ease), color 160ms var(--desk-ease);
+}
+
+body.desk .sidenav-theme-btn:hover {
+  background: var(--desk-raised);
+  color: var(--desk-text);
+}
+
+body.desk .sidenav-theme-btn:focus-visible {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+}
+
+/* Top bar */
+
+body.desk #navbarBlur,
+html[data-navbar="fixed"] body.desk #navbarBlur {
+  position: sticky;
+  z-index: 1020;
+  top: 0 !important;
+  margin: 0 !important;
+  padding: 0 32px !important;
+  min-height: 64px;
+  border-radius: 0 !important;
+  border-bottom: 1px solid var(--desk-line);
+  background: var(--desk-bg) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.desk #navbarBlur .container-fluid {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  padding: 0 !important;
+  gap: 16px;
+  overflow: visible;
+}
+
+body.desk #navbarBlur .breadcrumb,
+body.desk .fixed-plugin {
+  display: none !important;
+}
+
+body.desk .desk-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  color: var(--desk-text);
+}
+
+body.desk .desk-subtitle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--desk-muted);
+}
+
+@media (min-width: 992px) {
+  body.desk #navbar {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 auto;
+  }
+}
+
+body.desk .navbar-search {
+  flex: 1 1 auto;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.desk .navbar-search .input-group {
+  height: 36px;
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-card);
+  overflow: hidden;
+  align-items: center;
+}
+
+body.desk .navbar-search .input-group-text {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 0 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--desk-muted);
+}
+
+body.desk .navbar-search .form-control {
+  height: 36px;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent;
+  padding: 0 12px;
+  font-size: 14px;
+  color: var(--desk-text);
+}
+
+body.desk .navbar-search .form-control::placeholder {
+  color: var(--desk-muted);
+}
+
+body.desk .navbar-search .form-control:focus {
+  box-shadow: none !important;
+}
+
+body.desk .navbar-search .input-group:focus-within {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 1px;
+}
+
+body.desk #navbar > .navbar-nav {
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+body.desk #navbar .nav-link,
+body.desk #account-update-open,
+body.desk #sign-out {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 8px !important;
+  border-radius: 8px;
+  color: var(--desk-secondary) !important;
+  font-size: 14px;
+  font-weight: 400 !important;
+  background: transparent;
+  transition: background-color 160ms var(--desk-ease), color 160ms var(--desk-ease);
+}
+
+body.desk #account-update-open:hover,
+body.desk #sign-out:hover,
+body.desk #notifications-bell:hover {
+  background: var(--desk-raised);
+  color: var(--desk-text) !important;
+}
+
+body.desk #account-update-open:focus-visible,
+body.desk #sign-out:focus-visible,
+body.desk #notifications-bell:focus-visible,
+body.desk #iconNavbarSidenav:focus-visible {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+}
+
+body.desk .notifications-anchor {
+  position: relative;
+}
+
+body.desk .notifications-bell {
+  overflow: visible;
+}
+
+body.desk .notifications-bell-badge {
+  top: -4px;
+  right: -6px;
+  z-index: 1;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--desk-accent);
+  color: #fff;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 16px;
+}
+
+body.desk .notifications-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 30;
+  width: min(380px, calc(100vw - 32px));
+  padding: 12px 14px 8px;
+  border: 1px solid var(--desk-line);
+  border-radius: 12px;
+  background: var(--desk-card);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+}
+
+body.desk .notifications-menu .notifications-panel {
+  margin: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+body.desk .notifications-menu .notifications-list {
+  max-height: 320px;
+}
+
+/* Page */
+
+body.desk .main-content > .container-fluid.py-4 {
+  width: 100%;
+  max-width: 1600px;
+  overflow: visible;
+  padding: 32px !important;
+}
+
+body.desk .main-content > .container-fluid.py-4 > * {
+  animation: desk-in 320ms var(--desk-ease) both;
+}
+
+body.desk .main-content > .container-fluid.py-4 > *:nth-child(2) { animation-delay: 50ms; }
+body.desk .main-content > .container-fluid.py-4 > *:nth-child(3) { animation-delay: 100ms; }
+body.desk .main-content > .container-fluid.py-4 > *:nth-child(4) { animation-delay: 150ms; }
+body.desk .main-content > .container-fluid.py-4 > *:nth-child(5) { animation-delay: 200ms; }
+body.desk .main-content > .container-fluid.py-4 > *:nth-child(6) { animation-delay: 250ms; }
+
+@keyframes desk-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+body.desk .btn,
+body.desk .users-filter-btn,
+body.desk .activity-filter-btn,
+body.desk .chart-toggle-btn {
+  transition: background-color 160ms var(--desk-ease), color 160ms var(--desk-ease), border-color 160ms var(--desk-ease), transform 120ms var(--desk-ease);
+}
+
+body.desk .btn:active,
+body.desk .users-filter-btn:active,
+body.desk .activity-filter-btn:active,
+body.desk .chart-toggle-btn:active,
+body.desk #sidenav-main .nav-link:active,
+body.desk #account-update-open:active,
+body.desk #sign-out:active {
+  transform: scale(0.98);
+}
+
+body.desk tbody tr {
+  transition: background-color 160ms var(--desk-ease);
+}
+
+body.desk tbody tr:hover {
+  background-color: var(--desk-raised);
+}
+
+body.desk .modal.fade {
+  transition: opacity 200ms var(--desk-ease);
+}
+
+body.desk .modal.fade .modal-dialog {
+  transition: transform 280ms var(--desk-ease);
+  transform: translateY(8px);
+}
+
+body.desk .modal.fade.show .modal-dialog {
+  transform: none;
+}
+
+body.desk .dropdown-menu {
+  display: block;
+  margin-top: 4px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 180ms var(--desk-ease), transform 180ms var(--desk-ease), visibility 180ms var(--desk-ease);
+}
+
+body.desk .dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+}
+
+body.desk .global-search-panel:not([hidden]),
+body.desk .toast.show,
+body.desk .notification-item.is-new {
+  animation: desk-in 220ms var(--desk-ease);
+}
+
+body.desk .notification-item.is-new {
+  box-shadow: none;
+}
+
+body.desk .timed-alert {
+  animation-timing-function: var(--desk-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.desk .main-content > .container-fluid.py-4 > *,
+  body.desk .global-search-panel:not([hidden]),
+  body.desk .toast.show,
+  body.desk .notification-item.is-new,
+  body.desk .timed-alert {
+    animation: none;
+  }
+
+  body.desk .btn,
+  body.desk .users-filter-btn,
+  body.desk .activity-filter-btn,
+  body.desk .chart-toggle-btn,
+  body.desk #sidenav-main .nav-link,
+  body.desk .modal.fade,
+  body.desk .modal.fade .modal-dialog,
+  body.desk .dropdown-menu,
+  body.desk tbody tr {
+    transition: none;
+  }
+
+  body.desk .btn:active,
+  body.desk .users-filter-btn:active,
+  body.desk .activity-filter-btn:active,
+  body.desk .chart-toggle-btn:active,
+  body.desk #sidenav-main .nav-link:active,
+  body.desk #account-update-open:active,
+  body.desk #sign-out:active,
+  body.desk .modal.fade .modal-dialog {
+    transform: none;
+  }
+}
+
+body.desk .card {
+  border: 1px solid var(--desk-line) !important;
+  border-radius: 16px !important;
+  background: var(--desk-card) !important;
+  box-shadow: none !important;
+}
+
+body.desk .card-header,
+body.desk .card-body {
+  background: transparent;
+}
+
+body.desk .welcome-card {
+  background: var(--desk-card) !important;
+}
+
+body.desk .welcome-body {
+  padding: 24px !important;
+}
+
+body.desk .welcome-kicker,
+body.desk .activity-filter-label {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--desk-muted);
+}
+
+body.desk .welcome-hello {
+  display: none;
+}
+
+body.desk .welcome-name {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--desk-text);
+}
+
+body.desk .welcome-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--desk-text);
+  background: var(--desk-raised);
+  box-shadow: none;
+}
+
+body.desk .welcome-pill {
+  height: 24px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  gap: 8px;
+}
+
+body.desk .welcome-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--desk-up);
+  box-shadow: none;
+}
+
+body.desk .notifications-unread-pill {
+  height: auto;
+  padding: 0;
+  background: transparent !important;
+  color: var(--desk-accent) !important;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+body.desk .notifications-unread-pill:hover,
+body.desk .notifications-unread-pill:focus-visible {
+  background: transparent !important;
+  color: var(--desk-text) !important;
+}
+
+body.desk .welcome-card .notifications-panel {
+  border-color: var(--desk-line);
+}
+
+body.desk .notifications-header h6,
+body.desk .activity-card h6,
+body.desk .card-header h6 {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--desk-text);
+}
+
+body.desk .notifications-mark-all {
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+body.desk .notifications-mark-all:hover {
+  color: var(--desk-text);
+}
+
+body.desk .notification-item {
+  border-radius: 8px;
+  transition: background-color 160ms var(--desk-ease);
+}
+
+body.desk .notification-item.is-unread,
+body.desk .notification-item.is-unread:hover {
+  background: var(--desk-raised);
+}
+
+body.desk .notification-item:focus-visible,
+body.desk .notifications-header h6:focus-visible,
+body.desk .activity-card h6:focus-visible,
+body.desk .activity-filter-btn:focus-visible,
+body.desk .chart-toggle-btn:focus-visible {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+}
+
+body.desk .notification-icon,
+body.desk .notification-icon svg,
+body.desk .notification-item[data-tone] .notification-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--desk-muted) !important;
+  background: transparent !important;
+}
+
+body.desk .notification-dot {
+  background: var(--desk-accent);
+  box-shadow: none;
+}
+
+body.desk .notification-title {
+  font-weight: 500;
+}
+
+body.desk .notification-time,
+body.desk [data-part="summary"],
+body.desk #dashboard-systems-updated,
+body.desk .systems-mono,
+body.desk .dashboard-address {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+/* Activity: one lead chart, two quieter counts */
+
+body.desk .desk-activity {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
+  gap: 16px;
+  margin: 16px 0 0 !important;
+}
+
+body.desk .desk-activity > [class*="col-"] {
+  width: auto;
+  max-width: none;
+  margin: 0 !important;
+  padding: 0;
+  display: flex;
+}
+
+body.desk .desk-activity > :first-child {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+body.desk .desk-activity > :nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+body.desk .desk-activity > :nth-child(3) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+@media (max-width: 991.98px) {
+  body.desk .desk-activity {
+    grid-template-columns: 1fr;
+  }
+
+  body.desk .desk-activity > :first-child,
+  body.desk .desk-activity > :nth-child(2),
+  body.desk .desk-activity > :nth-child(3) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+body.desk .activity-card .card-body {
+  padding: 20px !important;
+}
+
+body.desk .activity-card.is-lead .card-body {
+  min-height: 100%;
+}
+
+body.desk .activity-filter {
+  gap: 4px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+body.desk .activity-filter-btn {
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  box-shadow: none;
+  transition: background-color 160ms var(--desk-ease), color 160ms var(--desk-ease);
+}
+
+body.desk .activity-filter-btn.is-active {
+  background: var(--desk-raised);
+  border-color: var(--desk-line);
+  color: var(--desk-text);
+  box-shadow: none;
+}
+
+body.desk .chart-toggle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--desk-line);
+  background: var(--desk-card);
+  color: var(--desk-muted);
+  transition: background-color 160ms var(--desk-ease), color 160ms var(--desk-ease);
+}
+
+body.desk .chart-toggle-btn.is-active {
+  background: var(--desk-raised);
+  color: var(--desk-text);
+}
+
+body.desk .activity-chart {
+  height: 112px;
+  margin-top: 12px;
+}
+
+body.desk .activity-card.is-lead .activity-chart {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 280px;
+}
+
+body.desk [data-part="summary"] {
+  color: var(--desk-muted) !important;
+  font-size: 12px;
+}
+
+/* Systems: the signal lamps */
+
+body.desk #dashboard-systems .card-header,
+body.desk #dashboard-sign-ins .card-header {
+  padding: 20px 20px 0;
+}
+
+body.desk #dashboard-systems .card-body,
+body.desk #dashboard-sign-ins .card-body {
+  padding: 12px 8px 16px;
+}
+
+body.desk .systems-table-scroll thead th {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--desk-line);
+  background: var(--desk-card);
+  color: var(--desk-muted) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+body.desk #dashboard-systems-rows td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-color: var(--desk-line);
+  vertical-align: middle;
+}
+
+body.desk .system-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  border-radius: 0;
+  background: transparent;
+  color: var(--desk-muted);
+}
+
+body.desk .dashboard-system-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+body.desk .dashboard-status {
+  padding: 0;
+  border-radius: 0;
+  background: transparent !important;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--desk-secondary);
+}
+
+body.desk .dashboard-status::before {
+  width: 8px;
+  height: 8px;
+  box-shadow: none;
+  background: var(--desk-muted);
+}
+
+body.desk .dashboard-status.is-up {
+  color: var(--desk-text);
+}
+
+body.desk .dashboard-status.is-up::before {
+  background: var(--desk-up);
+}
+
+body.desk .dashboard-status.is-down {
+  color: var(--desk-text);
+}
+
+body.desk .dashboard-status.is-down::before {
+  background: var(--desk-down);
+}
+
+body.desk .dashboard-status.is-stale {
+  margin-left: 8px;
+  color: var(--desk-muted);
+}
+
+body.desk .dashboard-status.is-stale::before {
+  background: #a16207;
+}
+
+body.desk .timeline-step {
+  background: var(--desk-raised) !important;
+  box-shadow: none !important;
+  color: var(--desk-muted);
+}
+
+body.desk .timeline-step svg {
+  stroke: currentColor !important;
+}
+
+body.desk .timeline-content h6 {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+body.desk .timeline-content time {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+body.desk .btn.bg-gradient-dark,
+body.desk #notification-modal-action {
+  background-image: none !important;
+  background-color: var(--desk-text) !important;
+  color: #fff !important;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: none !important;
+  font-weight: 500;
+}
+
+body.desk .btn-outline-secondary,
+body.desk .btn-outline-dark {
+  border-radius: 8px;
+  border-color: var(--desk-line);
+  color: var(--desk-text);
+  font-weight: 400;
+  box-shadow: none;
+}
+
+body.desk[data-page="systems"] .systems-remote-tag {
+  display: inline-flex;
+  min-width: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--desk-muted);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 16px;
+}
+
+body.desk .dashboard-refresh-warning {
+  border-radius: 8px;
+  background: var(--desk-raised);
+  color: #854d0e;
+}
+
+body.desk .users-state-icon {
+  background: var(--desk-raised);
+  color: var(--desk-muted);
+  box-shadow: none;
+}
+
+body.desk .users-card,
+body.desk .modal-content {
+  border: 1px solid var(--desk-line) !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+}
+
+body.desk .users-card .card-header {
+  padding: 20px 24px 0;
+}
+
+body.desk .users-card thead th {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--desk-line);
+  color: var(--desk-muted) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  background: var(--desk-card);
+}
+
+/* Wide tables scroll inside the card. The first column and the header stay put,
+   so the timestamp (and the column titles) are not clipped by the sidebar. */
+@media (min-width: 768px) {
+  body.desk .users-table-wrap {
+    max-height: calc(100vh - 280px);
+    overflow: auto;
+  }
+
+  body.desk .users-card thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  body.desk .users-table th:first-child,
+  body.desk .users-table td:first-child,
+  body.desk .systems-table th:first-child,
+  body.desk .systems-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    min-width: 11rem;
+    background: var(--desk-card);
+    box-shadow: 1px 0 0 var(--desk-line);
+  }
+
+  body.desk .users-table thead th:first-child,
+  body.desk .systems-table thead th:first-child {
+    z-index: 3;
+  }
+
+  body.desk .users-table tbody tr:hover td:first-child,
+  body.desk .systems-table tbody tr:hover td:first-child {
+    background: var(--desk-raised);
+  }
+}
+
+@media (max-width: 991.98px) {
+  body.desk .users-table-wrap:has(.systems-table) {
+    max-height: none;
+    overflow: visible;
+  }
+
+  body.desk .systems-table th:first-child,
+  body.desk .systems-table td:first-child {
+    position: static;
+    left: auto;
+    min-width: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+body.desk .users-table td.audit-action,
+body.desk .systems-table td.audit-action {
+  white-space: normal;
+  min-width: 16rem;
+  max-width: 28rem;
+}
+
+body.desk .btn.bg-gradient-primary,
+body.desk .btn.bg-gradient-dark,
+body.desk .btn.bg-gradient-danger,
+body.desk .btn.btn-primary {
+  background-image: none !important;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: none !important;
+  font-weight: 500;
+}
+
+body.desk .btn.bg-gradient-primary,
+body.desk .btn.bg-gradient-dark,
+body.desk .btn.btn-primary {
+  background-color: var(--desk-text) !important;
+  color: var(--desk-bg) !important;
+}
+
+body.desk .btn.bg-gradient-danger {
+  background-color: var(--desk-down) !important;
+  color: #fff !important;
+}
+
+body.desk .btn-outline-secondary,
+body.desk .btn-outline-dark,
+body.desk .btn-outline-primary {
+  border-radius: 8px;
+  border-color: var(--desk-line);
+  background: transparent;
+  color: var(--desk-text);
+  box-shadow: none;
+  font-weight: 400;
+}
+
+body.desk .form-control,
+body.desk .form-select {
+  border-radius: 8px;
+  border-color: var(--desk-line);
+  background-color: var(--desk-card);
+  color: var(--desk-text);
+  box-shadow: none;
+}
+
+body.desk .form-control:focus,
+body.desk .form-select:focus {
+  border-color: var(--desk-text);
+  box-shadow: none;
+}
+
+body.desk .users-filter {
+  gap: 4px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+body.desk .users-filter-btn {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  box-shadow: none;
+}
+
+body.desk .users-filter-btn.is-active {
+  background: var(--desk-raised);
+  border-color: var(--desk-line);
+  color: var(--desk-text);
+  box-shadow: none;
+}
+
+body.desk .users-filter-count {
+  min-width: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+body.desk .users-filter-btn:focus-visible,
+body.desk .form-control:focus-visible {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+}
+
+/* Dark */
+
+html[data-theme="dark"] body.desk {
+  --desk-bg: #141415;
+  --desk-side: #0f0f10;
+  --desk-card: #19191b;
+  --desk-raised: #232325;
+  --desk-line: rgba(237, 237, 237, 0.08);
+  --desk-text: #ededed;
+  --desk-secondary: #a1a1a6;
+  --desk-muted: #85858b;
+  --desk-accent: #fb923c;
+  --desk-up: #4cc38a;
+  --desk-down: #e5484d;
+  color: var(--desk-text);
+}
+
+html[data-theme="dark"] body.desk.bg-gray-100 {
+  background-color: #141415 !important;
+}
+
+html[data-theme="dark"] body.desk .systems-table-scroll thead th {
+  background: var(--desk-card);
+}
+
+html[data-theme="dark"] body.desk .dashboard-refresh-warning {
+  color: #f5d38a;
+}
+
+html[data-theme="dark"] body.desk .notifications-bell-badge,
+html[data-theme="dark"] body.desk .btn.bg-gradient-dark,
+html[data-theme="dark"] body.desk #notification-modal-action {
+  color: #141415 !important;
+  background-color: #ededed !important;
+}
+
+html[data-theme="dark"] body.desk .desk-mark {
+  color: var(--desk-accent);
+}
+
+body.desk #remote-desk-auth-modal .modal-dialog {
+  max-width: 440px;
+}
+
+body.desk #remote-desk-auth-modal .modal-header,
+body.desk #remote-desk-auth-modal .modal-footer {
+  padding: 16px 20px;
+  border-color: var(--desk-line);
+}
+
+body.desk #remote-desk-auth-modal .modal-title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+body.desk #remote-desk-auth-modal .modal-body {
+  padding: 20px;
+}
+
+body.desk #remote-desk-auth-modal .modal-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+body.desk #remote-desk-auth-target {
+  margin: 0 0 4px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--desk-text);
+}
+
+body.desk #remote-desk-auth-fingerprint.is-choice .remote-desk-ridge,
+body.desk #remote-desk-auth-fingerprint.is-choice #remote-desk-auth-fingerprint-status {
+  display: none;
+}
+
+body.desk #remote-desk-auth-fingerprint.is-choice {
+  padding: 0;
+}
+
+body.desk #remote-desk-auth-fingerprint.is-choice #remote-desk-auth-target {
+  margin: 0 0 16px;
+}
+
+body.desk #remote-desk-auth-fingerprint {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 0 8px;
+  text-align: left;
+}
+
+body.desk #remote-desk-auth-fingerprint[hidden] {
+  display: none;
+}
+
+body.desk .remote-desk-ridge {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  color: var(--desk-accent);
+}
+
+body.desk #remote-desk-auth-fingerprint-status,
+body.desk #remote-desk-auth-fallback-message {
+  margin: 0;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+body.desk #remote-desk-auth-fallback-message {
+  margin-bottom: 16px;
+}
+
+body.desk #remote-desk-auth-alert {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-raised);
+  color: var(--desk-text);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+body.desk #remote-desk-auth-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: 0 0 16px;
+  padding: 4px;
+  border: 1px solid var(--desk-line);
+  border-radius: 10px;
+  background: var(--desk-raised);
+}
+
+body.desk #remote-desk-auth-methods input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+body.desk #remote-desk-auth-methods label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 7px;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+}
+
+body.desk #remote-desk-auth-methods label:hover {
+  color: var(--desk-text);
+}
+
+body.desk #remote-desk-auth-methods input:checked + label {
+  background: var(--desk-text);
+  color: var(--desk-bg);
+}
+
+body.desk #remote-desk-auth-methods input:focus-visible + label {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+}
+
+body.desk #remote-desk-auth-modal .form-label {
+  margin-bottom: 8px;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+body.desk #remote-desk-auth-modal .form-control {
+  height: 36px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+body.desk #remote-desk-auth-pin-fields .mb-3 {
+  margin-bottom: 12px;
+}
+
+body.desk #remote-desk-auth-pin-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+body.desk #remote-desk-auth-pin-actions button,
+body.desk #remote-desk-auth-back {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+body.desk #remote-desk-auth-pin-actions button:hover,
+body.desk #remote-desk-auth-back:hover {
+  color: var(--desk-text);
+}
+
+body.desk #remote-desk-auth-back {
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+body.desk #remote-desk-auth-pin-actions button:focus-visible,
+body.desk #remote-desk-auth-back:focus-visible {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+body.desk #remote-desk-auth-alternate {
+  margin-right: auto;
+  height: 36px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+body.desk #remote-desk-auth-alternate:hover {
+  color: var(--desk-text);
+}
+
+body.desk #remote-desk-auth-submit,
+body.desk #remote-desk-auth-modal .modal-footer .btn-outline-secondary {
+  height: 36px;
+  margin: 0;
+  padding: 0 16px;
+}
+
+body.desk #remote-desk-auth-alternate:focus-visible,
+body.desk #remote-desk-auth-submit:focus-visible {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+}
+
+/* Credentials dialogs and user roles. Chrome stays graphite. The secret and the permission row carry the detail. */
+
+body.desk[data-page="systems"] .users-header,
+body.desk[data-page="user-roles"] .users-header {
+  align-items: center;
+  gap: 16px;
+}
+
+body.desk[data-page="systems"] .users-toolbar,
+body.desk[data-page="user-roles"] .users-toolbar {
+  gap: 12px 16px;
+  margin-top: 16px;
+}
+
+body.desk[data-page="systems"] .users-search .form-control,
+body.desk[data-page="user-roles"] .users-search .form-control {
+  height: 36px;
+  padding-left: 36px;
+}
+
+body.desk[data-page="systems"] .users-search-icon,
+body.desk[data-page="user-roles"] .users-search-icon {
+  left: 12px;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="systems"] .users-card .card-body {
+  padding: 16px 0;
+}
+
+body.desk[data-page="user-roles"] .users-card .card-body {
+  padding: 16px 24px 24px;
+}
+
+body.desk[data-page="user-roles"] .users-pagination {
+  padding: 16px 0 0;
+  gap: 12px;
+}
+
+body.desk[data-page="systems"] .users-actions,
+body.desk[data-page="user-roles"] .users-actions {
+  gap: 8px;
+}
+
+body.desk[data-page="systems"] .users-actions .btn,
+body.desk[data-page="user-roles"] .users-actions .btn {
+  height: 32px;
+  padding: 0 12px;
+}
+
+body.desk[data-page="systems"] .btn-outline-danger,
+body.desk[data-page="user-roles"] .btn-outline-danger {
+  color: var(--desk-down);
+  border-color: var(--desk-line);
+  background: transparent;
+}
+
+body.desk[data-page="user-roles"] [data-field="count"] {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--desk-secondary);
+}
+
+body.desk[data-page="systems"] .systems-env {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--desk-secondary);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-transform: none;
+}
+
+body.desk[data-page="systems"] .systems-env::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--desk-muted);
+}
+
+body.desk[data-page="systems"] .systems-env.is-production::before {
+  background: var(--desk-up);
+}
+
+body.desk[data-page="systems"] .systems-env.is-test::before {
+  background: var(--desk-accent);
+}
+
+body.desk[data-page="systems"] .systems-facts .systems-env {
+  margin-top: 0;
+}
+
+body.desk[data-page="systems"] .systems-na,
+body.desk[data-page="systems"] .systems-hidden-value {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--desk-muted);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+body.desk[data-page="systems"] .systems-remote {
+  gap: 8px;
+}
+
+body.desk[data-page="systems"] .systems-remote-item {
+  gap: 8px;
+}
+
+body.desk[data-page="systems"] .systems-remote-launch,
+body.desk[data-page="systems"] .systems-remote-static {
+  gap: 8px;
+  margin: 0;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background-color 160ms var(--desk-ease), color 160ms var(--desk-ease);
+}
+
+body.desk[data-page="systems"] .systems-remote-launch:hover,
+body.desk[data-page="systems"] .systems-remote-launch:focus-visible {
+  background: var(--desk-raised);
+}
+
+body.desk[data-page="systems"] .systems-remote-launch:focus-visible,
+body.desk[data-page="systems"] .systems-remote-copy:focus-visible,
+body.desk[data-page="systems"] .systems-inline-link:focus-visible,
+body.desk[data-page="systems"] .users-feedback:focus,
+body.desk[data-page="user-roles"] .users-feedback:focus {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+}
+
+body.desk[data-page="systems"] .systems-remote-copy {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--desk-muted);
+  transition: background-color 160ms var(--desk-ease), color 160ms var(--desk-ease), opacity 160ms var(--desk-ease);
+}
+
+body.desk[data-page="systems"] .systems-remote-copy svg {
+  width: 16px;
+  height: 16px;
+}
+
+body.desk[data-page="systems"] .systems-remote-copy:hover {
+  background: var(--desk-raised);
+  color: var(--desk-text);
+}
+
+body.desk[data-page="systems"] .systems-remote-copy.is-copied {
+  color: var(--desk-up);
+}
+
+body.desk[data-page="systems"] .systems-inline-link {
+  color: var(--desk-text);
+  font-weight: 400;
+}
+
+body.desk[data-page="systems"] .systems-inline-link:hover {
+  color: var(--desk-secondary);
+}
+
+body.desk[data-page="systems"] .systems-mono,
+body.desk[data-page="systems"] .systems-mono-input,
+body.desk[data-page="user-roles"] .permission-code {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--desk-text);
+}
+
+body.desk[data-page="user-roles"] .permission-code {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="systems"] .users-modal,
+body.desk[data-page="user-roles"] .users-modal {
+  background: var(--desk-card);
+  color: var(--desk-text);
+}
+
+body.desk[data-page="systems"] .users-modal .modal-header,
+body.desk[data-page="systems"] .users-modal .modal-footer,
+body.desk[data-page="user-roles"] .users-modal .modal-header,
+body.desk[data-page="user-roles"] .users-modal .modal-footer {
+  padding: 16px 20px;
+  border-color: var(--desk-line);
+}
+
+body.desk[data-page="systems"] .users-modal .modal-body,
+body.desk[data-page="user-roles"] .users-modal .modal-body {
+  padding: 20px;
+}
+
+body.desk[data-page="systems"] .users-modal .modal-title,
+body.desk[data-page="user-roles"] .users-modal .modal-title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+body.desk[data-page="systems"] .users-modal .modal-footer,
+body.desk[data-page="user-roles"] .users-modal .modal-footer {
+  gap: 8px;
+}
+
+body.desk[data-page="systems"] .users-modal .modal-footer .btn,
+body.desk[data-page="user-roles"] .users-modal .modal-footer .btn {
+  height: 36px;
+  margin: 0;
+  padding: 0 16px;
+}
+
+body.desk[data-page="systems"] .users-modal .btn-close,
+body.desk[data-page="user-roles"] .users-modal .btn-close {
+  filter: none;
+  opacity: 0.55;
+}
+
+body.desk[data-page="systems"] .form-label,
+body.desk[data-page="user-roles"] .form-label {
+  margin-bottom: 8px;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+body.desk[data-page="systems"] .users-modal .form-control,
+body.desk[data-page="systems"] .users-modal .form-select,
+body.desk[data-page="user-roles"] .users-modal .form-control,
+body.desk[data-page="user-roles"] .users-modal textarea.form-control {
+  font-size: 14px;
+}
+
+body.desk[data-page="systems"] .users-modal input.form-control,
+body.desk[data-page="systems"] .users-modal .form-select,
+body.desk[data-page="user-roles"] .users-modal input.form-control {
+  height: 36px;
+  padding: 8px 12px;
+}
+
+body.desk[data-page="systems"] .systems-section {
+  margin-bottom: 24px;
+}
+
+body.desk[data-page="systems"] .systems-section-title,
+body.desk[data-page="user-roles"] .permission-group-header h6,
+body.desk[data-page="user-roles"] #role-view-body h6 {
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 20px;
+  text-transform: none;
+  color: var(--desk-secondary);
+}
+
+body.desk[data-page="user-roles"] #role-view-body h6 {
+  margin: 20px 0 8px;
+}
+
+body.desk[data-page="systems"] .systems-section-title::after {
+  background: var(--desk-line);
+}
+
+body.desk[data-page="systems"] .systems-group,
+body.desk[data-page="systems"] .systems-view-group,
+body.desk[data-page="systems"] .users-meta,
+body.desk[data-page="systems"] .users-target,
+body.desk[data-page="systems"] .systems-switch {
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-raised);
+}
+
+body.desk[data-page="systems"] .systems-group,
+body.desk[data-page="systems"] .systems-view-group {
+  margin-bottom: 16px;
+  padding: 16px;
+}
+
+body.desk[data-page="systems"] .systems-group {
+  padding-bottom: 4px;
+}
+
+body.desk[data-page="systems"] #system-remote-body .systems-view-group:last-child,
+body.desk[data-page="systems"] #system-view-body .systems-view-group:last-child {
+  margin-bottom: 0;
+}
+
+body.desk[data-page="systems"] .systems-group-title {
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--desk-text);
+}
+
+body.desk[data-page="systems"] .systems-facts {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+body.desk[data-page="systems"] .systems-facts > div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+}
+
+body.desk[data-page="systems"] .systems-facts dt,
+body.desk[data-page="systems"] .users-meta dt {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-transform: none;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="systems"] .systems-facts dd,
+body.desk[data-page="systems"] .users-meta dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--desk-text);
+}
+
+body.desk[data-page="systems"] .users-meta,
+body.desk[data-page="systems"] .users-target {
+  gap: 16px;
+  margin: 0 0 20px;
+  padding: 16px;
+}
+
+body.desk[data-page="systems"] .users-meta dd {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+body.desk[data-page="systems"] .users-target [data-target="name"] {
+  color: var(--desk-text);
+  font-weight: 500;
+}
+
+body.desk[data-page="systems"] .systems-remote-connect {
+  margin-top: 12px;
+  height: 32px;
+  padding: 0 12px;
+}
+
+body.desk[data-page="systems"] .systems-switch {
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 16px;
+}
+
+body.desk[data-page="systems"] .systems-steps {
+  padding-left: 20px;
+}
+
+body.desk[data-page="systems"] .systems-steps li + li {
+  margin-top: 8px;
+}
+
+body.desk[data-page="systems"] .alert,
+body.desk[data-page="user-roles"] .alert {
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-raised);
+  color: var(--desk-text);
+}
+
+body.desk[data-page="systems"] .alert-danger,
+body.desk[data-page="user-roles"] .alert-danger,
+body.desk[data-page="systems"] .alert-danger.text-white,
+body.desk[data-page="user-roles"] .alert-danger.text-white {
+  color: var(--desk-down) !important;
+}
+
+body.desk[data-page="systems"] .users-feedback .btn-close,
+body.desk[data-page="user-roles"] .users-feedback .btn-close {
+  filter: none;
+}
+
+body.desk[data-page="user-roles"] .permission-summary {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="user-roles"] .permission-group {
+  margin-top: 16px;
+}
+
+body.desk[data-page="user-roles"] .permission-group-header {
+  margin-bottom: 8px;
+}
+
+body.desk[data-page="user-roles"] .permission-group-toggle {
+  color: var(--desk-secondary);
+  font-size: 13px;
+}
+
+body.desk[data-page="user-roles"] .permission-group-choices {
+  gap: 8px;
+}
+
+body.desk[data-page="user-roles"] .permission-choice {
+  grid-template-columns: 16px minmax(0, 1fr);
+  column-gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-card);
+  transition: background-color 160ms var(--desk-ease), border-color 160ms var(--desk-ease);
+}
+
+body.desk[data-page="user-roles"] .permission-choice-box {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border: 1px solid var(--desk-muted);
+  border-radius: 4px;
+  background: var(--desk-card);
+}
+
+body.desk[data-page="user-roles"] .permission-choice-input:checked + .permission-choice-box {
+  border-color: var(--desk-text);
+  background-color: var(--desk-text);
+}
+
+body.desk[data-page="user-roles"] .permission-choice-input:focus-visible + .permission-choice-box {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+}
+
+body.desk[data-page="user-roles"] .permission-choice:has(.permission-choice-input:checked) {
+  border-color: var(--desk-text);
+  background: var(--desk-raised);
+}
+
+body.desk[data-page="user-roles"] .permission-choice-name {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--desk-text);
+}
+
+body.desk[data-page="user-roles"] .permission-choice-detail {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="user-roles"] #role-view-body ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body.desk[data-page="user-roles"] #role-view-body li {
+  margin: 0 0 8px;
+  padding: 12px;
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-raised);
+}
+
+body.desk[data-page="user-roles"] #role-view-body li:last-child {
+  margin-bottom: 0;
+}
+
+body.desk[data-page="user-roles"] #role-view-body strong {
+  font-weight: 500;
+}
+
+body.desk[data-page="systems"] .users-modal .btn,
+body.desk[data-page="user-roles"] .users-modal .btn,
+body.desk[data-page="systems"] .users-actions .btn,
+body.desk[data-page="user-roles"] .users-actions .btn {
+  transition: background-color 160ms var(--desk-ease), color 160ms var(--desk-ease), border-color 160ms var(--desk-ease), transform 160ms var(--desk-ease);
+}
+
+body.desk[data-page="systems"] .users-modal .btn:active,
+body.desk[data-page="user-roles"] .users-modal .btn:active,
+body.desk[data-page="systems"] .users-actions .btn:active,
+body.desk[data-page="user-roles"] .users-actions .btn:active {
+  transform: scale(0.98);
+}
+
+html[data-theme="dark"] body.desk[data-page="systems"] .users-modal .btn-close,
+html[data-theme="dark"] body.desk[data-page="user-roles"] .users-modal .btn-close {
+  filter: invert(1);
+}
+
+/* Register a user. The new username is the moment. */
+
+body.desk[data-page="register"] .register-card .card-header {
+  padding: 20px 24px 0;
+}
+
+body.desk[data-page="register"] .register-card .card-body {
+  padding: 16px 24px 24px;
+}
+
+body.desk[data-page="register"] .register-card h5 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+body.desk[data-page="register"] .form-label {
+  margin-bottom: 8px;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+body.desk[data-page="register"] .form-control,
+body.desk[data-page="register"] .form-select {
+  height: 36px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+body.desk[data-page="register"] .form-text,
+body.desk[data-page="register"] .invalid-feedback,
+body.desk[data-page="register"] .match-feedback {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+body.desk[data-page="register"] .required-mark {
+  margin-left: 2px;
+  color: var(--desk-down);
+  font-weight: 400;
+}
+
+body.desk[data-page="register"] .register-mono,
+body.desk[data-page="register"] .register-summary dd[data-registered="username"],
+body.desk[data-page="register"] .register-summary dd[data-registered="email"] {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+body.desk[data-page="register"] .password-field .form-control {
+  padding-right: 40px;
+}
+
+body.desk[data-page="register"] .password-toggle {
+  right: 4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="register"] .password-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+body.desk[data-page="register"] .password-toggle:hover {
+  color: var(--desk-text);
+  background: var(--desk-raised);
+}
+
+body.desk[data-page="register"] .password-toggle:focus-visible,
+body.desk[data-page="register"] .register-alert:focus,
+body.desk[data-page="register"] .register-success:focus {
+  outline: 2px solid var(--desk-text);
+  outline-offset: 2px;
+}
+
+body.desk[data-page="register"] .register-actions {
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+body.desk[data-page="register"] .register-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  margin: 0;
+  padding: 0 16px;
+  line-height: 20px;
+  transition: background-color 160ms var(--desk-ease), color 160ms var(--desk-ease), border-color 160ms var(--desk-ease), transform 160ms var(--desk-ease);
+}
+
+body.desk[data-page="register"] .register-actions .btn:active {
+  transform: scale(0.98);
+}
+
+body.desk[data-page="register"] .alert-danger,
+body.desk[data-page="register"] .alert-danger.text-white {
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-raised);
+  color: var(--desk-down) !important;
+}
+
+body.desk[data-page="register"] .register-success-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background: var(--desk-raised);
+  color: var(--desk-up);
+  box-shadow: none;
+}
+
+body.desk[data-page="register"] .register-success-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+body.desk[data-page="register"] .register-summary {
+  gap: 12px 16px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-raised);
+}
+
+body.desk[data-page="register"] .register-summary dt {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-transform: none;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="register"] .register-summary dd {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--desk-text);
+}
+
+body.desk[data-page="register"] .register-summary dd[data-registered="username"] {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+body.desk[data-page="register"] .register-steps {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--desk-secondary);
+}
+
+body.desk[data-page="register"] .register-steps li {
+  margin-bottom: 8px;
+}
+
+body.desk[data-page="register"] .register-steps li:last-child {
+  margin-bottom: 0;
+}
+
+/* Users. The username is the moment. Status is the lamp. */
+
+body.desk[data-page="users"] .users-search-icon {
+  left: 12px;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="users"] .users-search .form-control {
+  height: 36px;
+  padding-left: 36px;
+}
+
+body.desk[data-page="users"] .users-avatar {
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+  border-radius: 8px;
+  background: var(--desk-raised);
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+body.desk[data-page="users"] .users-you {
+  margin-top: 2px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--desk-muted);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-transform: none;
+}
+
+body.desk[data-page="users"] .users-name {
+  font-weight: 500;
+}
+
+body.desk[data-page="users"] .users-break,
+body.desk[data-page="users"] .users-target [data-target="username"],
+body.desk[data-page="users"] .users-target [data-target="email"] {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+body.desk[data-page="users"] .users-role,
+body.desk[data-page="users"] .users-role.is-administrator {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+body.desk[data-page="users"] .users-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+body.desk[data-page="users"] .users-status::before {
+  width: 8px;
+  height: 8px;
+  background: var(--desk-muted);
+}
+
+body.desk[data-page="users"] .users-status.is-active::before {
+  background: var(--desk-up);
+}
+
+body.desk[data-page="users"] .users-status.is-disabled,
+body.desk[data-page="users"] .users-status.is-disabled::before {
+  color: var(--desk-muted);
+  background: transparent;
+}
+
+body.desk[data-page="users"] .users-status.is-disabled::before {
+  background: var(--desk-muted);
+}
+
+body.desk[data-page="users"] time {
+  font-variant-numeric: tabular-nums;
+}
+
+body.desk[data-page="users"] .users-actions {
+  gap: 8px;
+}
+
+body.desk[data-page="users"] .users-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+body.desk[data-page="users"] .btn-outline-warning,
+body.desk[data-page="users"] .btn-outline-success,
+body.desk[data-page="users"] .btn-outline-danger {
+  --bs-btn-color: var(--desk-secondary);
+  --bs-btn-border-color: var(--desk-line);
+  --bs-btn-hover-color: var(--desk-text);
+  --bs-btn-hover-bg: var(--desk-raised);
+  --bs-btn-hover-border-color: var(--desk-line);
+  --bs-btn-active-color: var(--desk-text);
+  --bs-btn-active-bg: var(--desk-raised);
+  --bs-btn-active-border-color: var(--desk-line);
+  color: var(--desk-secondary);
+  border-color: var(--desk-line);
+  background: transparent;
+  opacity: 1;
+}
+
+body.desk[data-page="users"] .btn-outline-danger {
+  --bs-btn-color: var(--desk-down);
+  --bs-btn-hover-color: var(--desk-down);
+  --bs-btn-active-color: var(--desk-down);
+  color: var(--desk-down);
+}
+
+body.desk[data-page="users"] .btn-outline-warning:hover,
+body.desk[data-page="users"] .btn-outline-success:hover,
+body.desk[data-page="users"] .btn-outline-danger:hover {
+  opacity: 1;
+}
+
+body.desk[data-page="users"] .alert,
+body.desk[data-page="users"] .alert.text-white {
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-raised);
+  color: var(--desk-text) !important;
+}
+
+body.desk[data-page="users"] .alert-danger,
+body.desk[data-page="users"] .alert-danger.text-white {
+  color: var(--desk-down) !important;
+}
+
+body.desk[data-page="users"] .users-feedback .btn-close {
+  filter: none;
+}
+
+body.desk[data-page="users"] .users-modal .modal-header,
+body.desk[data-page="users"] .users-modal .modal-footer {
+  padding: 16px 20px;
+  border-color: var(--desk-line);
+}
+
+body.desk[data-page="users"] .users-modal .modal-body {
+  padding: 16px 20px 20px;
+}
+
+body.desk[data-page="users"] .users-modal .modal-title {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+body.desk[data-page="users"] .users-modal .modal-footer {
+  gap: 8px;
+}
+
+body.desk[data-page="users"] .users-modal .modal-footer .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  margin: 0;
+  padding: 0 16px;
+}
+
+body.desk[data-page="users"] .users-modal .form-label {
+  margin-bottom: 8px;
+  color: var(--desk-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+body.desk[data-page="users"] .users-modal .form-control,
+body.desk[data-page="users"] .users-modal .form-select {
+  height: 36px;
+}
+
+body.desk[data-page="users"] .users-modal .form-text {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="users"] .users-meta,
+body.desk[data-page="users"] .users-target {
+  gap: 16px;
+  margin: 0 0 20px;
+  padding: 16px;
+  border: 1px solid var(--desk-line);
+  border-radius: 8px;
+  background: var(--desk-raised);
+}
+
+body.desk[data-page="users"] .users-meta dt {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 16px;
+  text-transform: none;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="users"] .users-meta dd,
+body.desk[data-page="users"] .users-target [data-target="name"] {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--desk-text);
+}
+
+body.desk[data-page="users"] .users-target [data-target="name"] {
+  font-weight: 500;
+}
+
+body.desk[data-page="users"] .users-view {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 12px 16px;
+  margin: 0;
+}
+
+body.desk[data-page="users"] .users-view dt {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--desk-muted);
+}
+
+body.desk[data-page="users"] .users-view dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--desk-text);
+}
+
+body.desk[data-page="users"] .users-view-mono {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+body.desk[data-page="users"] .users-view dd.is-empty {
+  color: var(--desk-muted);
+}
+
+html[data-theme="dark"] body.desk[data-page="users"] .users-modal .btn-close {
+  filter: invert(1);
+}

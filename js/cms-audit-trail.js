@@ -276,8 +276,15 @@
     }
     function buildRow(record, timeZone) {
         const row = document.createElement("tr");
-        row.append(cell("When", formatWhen(record.occurred_at, timeZone)), cell("User", person(record)), badgeCell(record), cell("Action", record.action_label), cell("Detail", detail(record), true));
+        row.append(cell("When", formatWhen(record.occurred_at, timeZone)), cell("User", person(record)), addressCell(record), badgeCell(record), cell("Action", record.action_label), cell("Detail", detail(record), true));
         return row;
+    }
+    function addressCell(record) {
+        var _a;
+        const value = ((_a = record.ip_address) === null || _a === void 0 ? void 0 : _a.trim()) ? record.ip_address.trim() : "—";
+        const td = cell("IP address", value);
+        td.className = "audit-ip";
+        return td;
     }
     function person(record) {
         var _a;

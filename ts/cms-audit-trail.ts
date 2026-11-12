@@ -14,6 +14,7 @@
     occurred_at: string | null;
     actor_name: string | null;
     actor_username: string | null;
+    ip_address: string | null;
     module: string;
     module_label: string;
     action_label: string;
@@ -315,11 +316,19 @@
     row.append(
       cell("When", formatWhen(record.occurred_at, timeZone)),
       cell("User", person(record)),
+      addressCell(record),
       badgeCell(record),
       cell("Action", record.action_label),
       cell("Detail", detail(record), true),
     );
     return row;
+  }
+
+  function addressCell(record: CmsAuditEvent): HTMLTableCellElement {
+    const value = record.ip_address?.trim() ? record.ip_address.trim() : "—";
+    const td = cell("IP address", value);
+    td.className = "audit-ip";
+    return td;
   }
 
   function person(record: CmsAuditEvent): string {

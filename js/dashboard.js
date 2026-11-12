@@ -169,7 +169,9 @@
             const canvas = part(card, "canvas");
             const live = part(card, "live");
             const forbidden = part(card, "forbidden");
-            let chartKind = "bar";
+            const initialKind = card.querySelector("[data-chart-type].is-active");
+            const initialType = initialKind === null || initialKind === void 0 ? void 0 : initialKind.dataset.chartType;
+            let chartKind = initialType === "line" || initialType === "bar" ? initialType : "bar";
             let chart = null;
             let latest = null;
             function selectedRange() {
@@ -194,7 +196,7 @@
                     type: chartKind,
                     data: {
                         labels: latest.data.map((point) => point.label),
-                        datasets: [chartDataset(chartKind, latest.meta.series_label, counts)],
+                        datasets: [chartDataset(chartKind, latest.meta.series_label, counts, series)],
                     },
                     options: {
                         responsive: true,
@@ -209,17 +211,17 @@
                                 ticks: {
                                     color: tick,
                                     precision: 0,
-                                    font: { family: "Inter", size: 11 },
+                                    font: { family: "IBM Plex Sans", size: 12 },
                                 },
                             },
                             x: {
                                 grid: { display: false, drawBorder: false },
                                 ticks: {
                                     color: tick,
-                                    maxRotation: counts.length > 10 ? 45 : 0,
+                                    maxRotation: 0,
                                     autoSkip: true,
                                     maxTicksLimit: counts.length > 10 ? 8 : counts.length,
-                                    font: { family: "Inter", size: 11 },
+                                    font: { family: "IBM Plex Sans", size: 12 },
                                 },
                             },
                         },
@@ -289,27 +291,30 @@
             }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
         }
     }
-    function chartDataset(kind, label, counts) {
+    function chartDataset(kind, label, counts, series) {
+        const lead = series === "remote_desks";
+        const ink = lead ? "#c2410c" : "#a3a3a3";
         if (kind === "line") {
             return {
                 label,
                 data: counts,
-                tension: 0.35,
-                borderWidth: 3,
-                borderColor: "#f97316",
-                backgroundColor: "rgba(249, 115, 22, 0.15)",
-                pointRadius: 3,
-                pointBackgroundColor: "#f97316",
-                fill: true,
+                tension: 0.3,
+                borderWidth: lead ? 2 : 1.5,
+                borderColor: ink,
+                backgroundColor: "transparent",
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                pointBackgroundColor: ink,
+                fill: false,
             };
         }
         return {
             label,
             data: counts,
             borderWidth: 0,
-            borderRadius: 6,
-            backgroundColor: "#f97316",
-            maxBarThickness: 28,
+            borderRadius: 4,
+            backgroundColor: ink,
+            maxBarThickness: lead ? 22 : 12,
         };
     }
     function renderSystems(response, announce) {
