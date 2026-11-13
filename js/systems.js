@@ -578,18 +578,23 @@
         void openConfirmedRemoteDesk(system, entry);
     }
     async function openConfirmedRemoteDesk(system, entry) {
-        const recorded = await recordRemoteDeskOpen(system, entry);
-        if (!recorded) {
-            live.textContent = "The remote desk wasn't opened. Try again.";
-            return;
-        }
         const href = launchHref(entry);
         const followLink = entry.type === "anydesk" || entry.type === "rustdesk"
             || (entry.type === "rdp" && linksEnabled("rdp"))
             || (entry.type === "ssh" && linksEnabled("ssh"));
         if (followLink && href) {
-            window.location.href = href;
+            launchExternal(href);
             live.textContent = `Opening ${entry.label} for ${system.name}.`;
+        }
+        const recorded = await recordRemoteDeskOpen(system, entry);
+        if (followLink && href) {
+            if (!recorded) {
+                live.textContent = `Opening ${entry.label} for ${system.name}. The open wasn't recorded.`;
+            }
+            return;
+        }
+        if (!recorded) {
+            live.textContent = "The remote desk wasn't opened. Try again.";
             return;
         }
         live.textContent = entry.type === "ssh"
@@ -597,6 +602,14 @@
             : entry.type === "rdp"
                 ? "Set up one-click RDP to open Remote Desktop, or enter the host shown here."
                 : `If ${entry.label} doesn't open, check that it's installed on this computer.`;
+    }
+    function launchExternal(href) {
+        const link = document.createElement("a");
+        link.href = href;
+        link.hidden = true;
+        document.body.append(link);
+        link.click();
+        link.remove();
     }
     function launchHref(entry) {
         var _a, _b;
@@ -1044,7 +1057,7 @@
     }
     function linksEnabled(helper) {
         const stored = readSetting(LINK_SETTING_KEYS[helper]);
-        return stored === null ? helper === "ssh" && IS_MAC : stored === "on";
+        return stored === null ? true : stored === "on";
     }
     function readSetting(key) {
         try {

@@ -585,17 +585,17 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p class="text-sm">Browsers can't start PowerShell on their own. A small helper lets SSH entries open PowerShell and run <code>ssh user@host</code> for you. Until it's set up, clicking an SSH entry copies that command so you can paste it.</p>
+          <p class="text-sm">Browsers can't start PowerShell on their own. A small helper lets SSH entries open PowerShell and run <code>ssh user@host</code> for you. One-click links are on for this site until you turn the switch off.</p>
           <ol class="text-sm systems-steps">
             <li><a class="systems-inline-link" href="../assets/downloads/install-ssh-link-handler.ps1" download>Download the SSH link helper</a>.</li>
             <li>Right-click the downloaded file and choose <strong>Run with PowerShell</strong>. It installs for your Windows account only and doesn't need administrator rights.</li>
-            <li>Turn on the switch below. The first time you click an SSH entry, your browser asks to open the link. Tick <strong>Always allow</strong>, then choose <strong>Open</strong>.</li>
+            <li>The first time you click an SSH entry, your browser asks to open the link. Tick <strong>Always allow</strong>, then choose <strong>Open</strong>. Turn the switch off if the helper is not installed on this computer.</li>
           </ol>
           <div class="form-check form-switch systems-switch">
             <input class="form-check-input" type="checkbox" role="switch" id="systems-ssh-links-toggle" aria-describedby="systems-ssh-links-help">
             <label class="form-check-label text-sm" for="systems-ssh-links-toggle">The SSH link helper is installed on this computer</label>
           </div>
-          <p class="text-xs text-secondary mb-0 mt-3" id="systems-ssh-links-help">This setting is saved in this browser only. It needs the OpenSSH Client, which is built into Windows 10 and 11. Passwords are never put in links; ssh asks for the password in the PowerShell window. To remove the helper, run it with <code>-Uninstall</code>.</p>
+          <p class="text-xs text-secondary mb-0 mt-3" id="systems-ssh-links-help">This choice is saved in this browser for this site. A new address, such as cms.enterpsys.com, starts with one-click links on. It needs the OpenSSH Client, which is built into Windows 10 and 11. Passwords are never put in links; ssh asks for the password in the PowerShell window. To remove the helper, run it with <code>-Uninstall</code>.</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn bg-gradient-dark mb-0" data-bs-dismiss="modal">Done</button>
@@ -612,17 +612,17 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p class="text-sm">Browsers can't start Remote Desktop Connection on their own. A small helper lets RDP entries open it straight away, with the host and username filled in. Until it's set up, clicking an RDP entry copies the host so you can paste it into Remote Desktop Connection.</p>
+          <p class="text-sm">Browsers can't start Remote Desktop Connection on their own. A small helper lets RDP entries open it straight away, with the host and username filled in. One-click links are on for this site until you turn the switch off.</p>
           <ol class="text-sm systems-steps">
             <li><a class="systems-inline-link" href="../assets/downloads/install-rdp-link-handler.ps1" download>Download the RDP link helper</a>.</li>
             <li>Right-click the downloaded file and choose <strong>Run with PowerShell</strong>. It installs for your Windows account only and doesn't need administrator rights.</li>
-            <li>Turn on the switch below. The first time you click an RDP entry, your browser asks to open the link. Tick <strong>Always allow</strong>, then choose <strong>Open</strong>.</li>
+            <li>The first time you click an RDP entry, your browser asks to open the link. Tick <strong>Always allow</strong>, then choose <strong>Open</strong>. Turn the switch off if the helper is not installed on this computer.</li>
           </ol>
           <div class="form-check form-switch systems-switch">
             <input class="form-check-input" type="checkbox" role="switch" id="systems-rdp-links-toggle" aria-describedby="systems-rdp-links-help">
             <label class="form-check-label text-sm" for="systems-rdp-links-toggle">The RDP link helper is installed on this computer</label>
           </div>
-          <p class="text-xs text-secondary mb-0 mt-3" id="systems-rdp-links-help">This setting is saved in this browser only. It works on Windows 10 and 11, which include Remote Desktop Connection. Passwords are never put in links; Remote Desktop asks for the password when it connects. To remove the helper, run it with <code>-Uninstall</code>.</p>
+          <p class="text-xs text-secondary mb-0 mt-3" id="systems-rdp-links-help">This choice is saved in this browser for this site. A new address, such as cms.enterpsys.com, starts with one-click links on. It works on Windows 10 and 11, which include Remote Desktop Connection. Passwords are never put in links; Remote Desktop asks for the password when it connects. To remove the helper, run it with <code>-Uninstall</code>.</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn bg-gradient-dark mb-0" data-bs-dismiss="modal">Done</button>
