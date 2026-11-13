@@ -1727,6 +1727,12 @@ body.desk[data-page="systems"] #system-view-body .systems-view-group:last-child 
   margin-bottom: 0;
 }
 
+body.desk[data-page="systems"] #system-remote-body .systems-view-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
 body.desk[data-page="systems"] .systems-group-title {
   gap: 8px;
   margin-bottom: 12px;
@@ -1785,9 +1791,17 @@ body.desk[data-page="systems"] .users-target [data-target="name"] {
 }
 
 body.desk[data-page="systems"] .systems-remote-connect {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   margin-top: 12px;
   height: 32px;
   padding: 0 12px;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 body.desk[data-page="systems"] .systems-switch {

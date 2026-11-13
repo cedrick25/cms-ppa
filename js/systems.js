@@ -839,11 +839,10 @@
                 copy: password,
                 beforeCopy: () => recordCredentialAccess(system.id, "password_copied", entry.type),
             });
-            const section = document.createElement("section");
-            section.className = "systems-view-group";
             const group = factGroup(entry.label, facts);
-            if (group) {
-                section.append(group);
+            const section = group !== null && group !== void 0 ? group : document.createElement("section");
+            if (!group) {
+                section.className = "systems-view-group";
             }
             const href = launchHref(entry);
             const followLink = href !== null && (entry.type === "anydesk" || entry.type === "rustdesk"
