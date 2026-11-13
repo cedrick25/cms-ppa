@@ -606,10 +606,15 @@
     function launchExternal(href) {
         const link = document.createElement("a");
         link.href = href;
-        link.hidden = true;
+        link.style.position = "fixed";
+        link.style.left = "0";
+        link.style.top = "0";
+        link.style.width = "1px";
+        link.style.height = "1px";
+        link.style.opacity = "0";
         document.body.append(link);
         link.click();
-        link.remove();
+        window.setTimeout(() => link.remove(), 1000);
     }
     function launchHref(entry) {
         var _a, _b;
@@ -840,14 +845,30 @@
             if (group) {
                 section.append(group);
             }
-            if (launchHref(entry)) {
-                const connect = document.createElement("button");
-                connect.type = "button";
+            const href = launchHref(entry);
+            const followLink = href !== null && (entry.type === "anydesk" || entry.type === "rustdesk"
+                || (entry.type === "rdp" && linksEnabled("rdp"))
+                || (entry.type === "ssh" && linksEnabled("ssh")));
+            if (href) {
+                const connect = document.createElement(followLink ? "a" : "button");
                 connect.className = "btn btn-sm bg-gradient-dark mb-0 systems-remote-connect";
                 connect.textContent = `Connect with ${entry.label}`;
                 connect.setAttribute("aria-label", launchLabel(system, entry));
                 connect.title = launchHint(entry);
-                connect.addEventListener("click", () => void openConfirmedRemoteDesk(system, entry));
+                if (followLink) {
+                    connect.href = href;
+                }
+                else {
+                    connect.type = "button";
+                }
+                connect.addEventListener("click", (event) => {
+                    if (!followLink) {
+                        event.preventDefault();
+                        void openConfirmedRemoteDesk(system, entry);
+                        return;
+                    }
+                    void recordRemoteDeskOpen(system, entry);
+                });
                 section.append(connect);
             }
             remoteBody.append(section);
