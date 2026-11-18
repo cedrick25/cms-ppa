@@ -154,7 +154,7 @@
           <div class="users-header">
             <div>
               <h5 class="mb-1" id="cms-audit-heading" tabindex="-1">CMS audit trail</h5>
-              <p class="text-sm text-secondary mb-0">Sign-ins, sign-outs, credential changes, remote desk opens, and user account changes in this system.</p>
+              <p class="text-sm text-secondary mb-0">Sign-ins, sign-outs, remote desks, information system names, MySQL credentials, and copies of local IP, domain, and VM details.</p>
             </div>
             <button type="button" class="btn bg-gradient-primary mb-0" id="cms-audit-refresh" data-permission="can-refresh-cms-audit">
               <span class="spinner-border spinner-border-sm me-2" id="cms-audit-refresh-spinner" aria-hidden="true" hidden></span>
@@ -204,7 +204,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v6l4 2"></path></svg>
             </div>
             <h6 class="mb-1">No CMS activity recorded yet</h6>
-            <p class="text-sm text-secondary mb-0">Sign-ins, sign-outs, credential changes, and user account changes will appear here.</p>
+            <p class="text-sm text-secondary mb-0">Sign-ins, remote desks, credential copies, and information system name updates will appear here.</p>
           </div>
 
           <div class="users-state" id="cms-audit-no-match" hidden>
@@ -270,7 +270,7 @@
   <script src="../js/update-account.js" defer></script>
   <script src="../js/cms-audit-trail.js" defer></script>
   <script src="../js/notifications.js?v=1.5.2" defer></script>
-  <script src="../js/global-search.js?v=1.0.4" defer></script>
+  <script src="../js/global-search.js?v=1.0.5" defer></script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {

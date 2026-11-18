@@ -19,6 +19,12 @@
     const COPIED_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>';
     const ENVIRONMENTS = { production: "Production", test: "Test", legacy: "Legacy" };
     const FIELD_LABELS = { local_ip: "local IP", mysql_host: "MySQL address", domain: "domain", vm_host: "VM host" };
+    const COPY_FIELD_LABELS = { local_ip: "Local IP", mysql_host: "MySQL IP", mysql_username: "MySQL user", mysql_password: "MySQL password", domain: "Domain", vm_host: "VM credentials" };
+    const MYSQL_LINES = [
+        { field: "mysql_host", label: "IP" },
+        { field: "mysql_username", label: "User" },
+        { field: "mysql_password", label: "Password" },
+    ];
     const FILTERS = ["all", "production", "test", "legacy"];
     const SECRET_FIELDS = [
         "anydesk_password", "rustdesk_password", "rdp_password", "ssh_password",
@@ -235,6 +241,18 @@
         const row = target.closest("tr[data-system-id]");
         const record = row ? records.get(Number(row.dataset.systemId)) : undefined;
         if (!row || !record) {
+            return;
+        }
+        const fieldCopy = target.closest("[data-field-copy]");
+        if (fieldCopy) {
+            event.preventDefault();
+            const field = fieldCopy.dataset.fieldCopy;
+            if (field === "local_ip" || field === "mysql_host" || field === "mysql_username" || field === "mysql_password" || field === "domain" || field === "vm_host") {
+                const value = record[field];
+                if (value) {
+                    void copyField(fieldCopy, record, field, value);
+                }
+            }
             return;
         }
         const copyControl = target.closest("[data-remote-action='copy']");
@@ -454,7 +472,23 @@
                 system.remote_access.forEach((entry, index) => remote.append(buildRemoteItem(system, entry, index)));
             }
         }
-        for (const field of ["local_ip", "mysql_host", "domain", "vm_host"]) {
+        const mysql = row.querySelector('[data-field="mysql"]');
+        if (mysql) {
+            const lines = MYSQL_LINES.filter((line) => system[line.field]);
+            if (lines.length === 0) {
+                mysql.replaceWith(notAvailable());
+            }
+            else if (system.details_hidden) {
+                (_b = mysql.closest("td")) === null || _b === void 0 ? void 0 : _b.setAttribute("title", `Show MySQL credentials for ${system.name}`);
+                mysql.append(concealedMark());
+            }
+            else {
+                for (const line of lines) {
+                    mysql.append(buildMysqlLine(system, line.field, line.label, system[line.field]));
+                }
+            }
+        }
+        for (const field of ["local_ip", "domain", "vm_host"]) {
             const cell = row.querySelector(`[data-field="${field}"]`);
             const value = system[field];
             if (!cell)
@@ -466,6 +500,7 @@
             else if (value) {
                 setBreakableText(cell, value);
                 cell.title = value;
+                (_b = cell.parentElement) === null || _b === void 0 ? void 0 : _b.append(buildFieldCopy(system, field));
             }
             else {
                 cell.replaceWith(notAvailable());
@@ -496,6 +531,30 @@
         button.append(dots);
         item.append(button);
         return item;
+    }
+    function buildMysqlLine(system, field, label, value) {
+        const item = document.createElement("li");
+        item.className = "systems-remote-item systems-mysql";
+        const tag = document.createElement("span");
+        tag.className = "systems-remote-tag";
+        tag.textContent = label;
+        const text = document.createElement("span");
+        text.className = "systems-mono";
+        setBreakableText(text, value);
+        text.title = value;
+        item.append(tag, text, buildFieldCopy(system, field));
+        return item;
+    }
+    function buildFieldCopy(system, field) {
+        const copy = document.createElement("button");
+        copy.type = "button";
+        copy.className = "systems-remote-copy";
+        copy.dataset.fieldCopy = field;
+        const label = `Copy ${COPY_FIELD_LABELS[field]}`;
+        copy.setAttribute("aria-label", `${label} for ${system.name}`);
+        copy.title = label;
+        copy.innerHTML = COPY_ICON;
+        return copy;
     }
     function concealedMark() {
         const mark = document.createElement("span");
@@ -529,6 +588,23 @@
         copy.innerHTML = COPY_ICON;
         item.append(control, copy);
         return item;
+    }
+    async function recordFieldCopy(systemId, field) {
+        try {
+            const response = await fetch(cmsApi.url(`/systems/${systemId}/credential-access`), {
+                method: "POST",
+                headers: cmsApi.headers({ "Content-Type": "application/json" }),
+                body: JSON.stringify({ movement: "field_copied", field }),
+                keepalive: true,
+            });
+            return response.ok;
+        }
+        catch {
+            return false;
+        }
+    }
+    async function copyField(button, system, field, value) {
+        await copySecret(button, value, COPY_FIELD_LABELS[field], () => recordFieldCopy(system.id, field));
     }
     async function recordCredentialAccess(systemId, movement, type) {
         try {
@@ -698,7 +774,7 @@
             return;
         }
         if (beforeCopy && !await beforeCopy()) {
-            live.textContent = "The password wasn't copied. Try again.";
+            live.textContent = `${label} wasn't copied. Try again.`;
             return;
         }
         const previous = (_a = button.getAttribute("aria-label")) !== null && _a !== void 0 ? _a : "";
@@ -1027,6 +1103,8 @@
             remote_access: remote,
             local_ip: detail.local_ip,
             mysql_host: detail.mysql_host,
+            mysql_username: detail.mysql_username,
+            mysql_password: detail.mysql_password,
             domain: detail.domain,
             vm_host: detail.vm_host,
             details_hidden: false,

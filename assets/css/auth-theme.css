@@ -2134,6 +2134,18 @@ html[data-theme="dark"] .users-target [data-target="name"] {
   white-space: nowrap;
 }
 
+.systems-mysql .systems-remote-tag {
+  width: 4.6rem;
+}
+
+.systems-mysql .systems-mono {
+  max-width: 11rem;
+  overflow: visible;
+  text-overflow: unset;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .systems-remote-tag {
   display: inline-flex;
   align-items: center;
@@ -2215,6 +2227,18 @@ html[data-theme="dark"] .users-target [data-target="name"] {
   text-decoration-color: currentColor;
 }
 
+.systems-address {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.systems-address .systems-cell {
+  min-width: 0;
+}
+
 .systems-remote-copy {
   display: inline-flex;
   align-items: center;
@@ -2250,6 +2274,7 @@ html[data-theme="dark"] .users-target [data-target="name"] {
   }
 
   .systems-remote-item:hover .systems-remote-copy,
+  .systems-address:hover .systems-remote-copy,
   .systems-remote-copy:focus-visible,
   .systems-remote-copy.is-copied {
     opacity: 1;

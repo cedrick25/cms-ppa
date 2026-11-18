@@ -26,6 +26,8 @@
     remote_access: RemoteAccess[];
     local_ip: string | null;
     mysql_host: string | null;
+    mysql_username: string | null;
+    mysql_password: string | null;
     domain: string | null;
     vm_host: string | null;
     details_hidden?: boolean;
@@ -89,6 +91,19 @@
   const COPIED_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>';
   const ENVIRONMENTS: Record<Environment, string> = { production: "Production", test: "Test", legacy: "Legacy" };
   const FIELD_LABELS = { local_ip: "local IP", mysql_host: "MySQL address", domain: "domain", vm_host: "VM host" } as const;
+  const COPY_FIELD_LABELS = {
+    local_ip: "Local IP",
+    mysql_host: "MySQL IP",
+    mysql_username: "MySQL user",
+    mysql_password: "MySQL password",
+    domain: "Domain",
+    vm_host: "VM credentials",
+  } as const;
+  const MYSQL_LINES = [
+    { field: "mysql_host", label: "IP" },
+    { field: "mysql_username", label: "User" },
+    { field: "mysql_password", label: "Password" },
+  ] as const;
   const FILTERS: EnvironmentFilter[] = ["all", "production", "test", "legacy"];
   const SECRET_FIELDS = [
     "anydesk_password", "rustdesk_password", "rdp_password", "ssh_password",
@@ -324,6 +339,18 @@
     if (!row || !record) {
       return;
     }
+    const fieldCopy = target.closest<HTMLButtonElement>("[data-field-copy]");
+    if (fieldCopy) {
+      event.preventDefault();
+      const field = fieldCopy.dataset.fieldCopy;
+      if (field === "local_ip" || field === "mysql_host" || field === "mysql_username" || field === "mysql_password" || field === "domain" || field === "vm_host") {
+        const value = record[field];
+        if (value) {
+          void copyField(fieldCopy, record, field, value);
+        }
+      }
+      return;
+    }
     const copyControl = target.closest<HTMLElement>("[data-remote-action='copy']");
     if (copyControl) {
       handleRemoteAction(copyControl, event);
@@ -552,7 +579,22 @@
       }
     }
 
-    for (const field of ["local_ip", "mysql_host", "domain", "vm_host"] as const) {
+    const mysql = row.querySelector<HTMLElement>('[data-field="mysql"]');
+    if (mysql) {
+      const lines = MYSQL_LINES.filter((line) => system[line.field]);
+      if (lines.length === 0) {
+        mysql.replaceWith(notAvailable());
+      } else if (system.details_hidden) {
+        mysql.closest("td")?.setAttribute("title", `Show MySQL credentials for ${system.name}`);
+        mysql.append(concealedMark());
+      } else {
+        for (const line of lines) {
+          mysql.append(buildMysqlLine(system, line.field, line.label, system[line.field] as string));
+        }
+      }
+    }
+
+    for (const field of ["local_ip", "domain", "vm_host"] as const) {
       const cell = row.querySelector<HTMLElement>(`[data-field="${field}"]`);
       const value = system[field];
       if (!cell) continue;
@@ -562,6 +604,7 @@
       } else if (value) {
         setBreakableText(cell, value);
         cell.title = value;
+        cell.parentElement?.append(buildFieldCopy(system, field));
       } else {
         cell.replaceWith(notAvailable());
       }
@@ -593,6 +636,32 @@
     button.append(dots);
     item.append(button);
     return item;
+  }
+
+  function buildMysqlLine(system: SystemSummary, field: keyof typeof COPY_FIELD_LABELS, label: string, value: string): HTMLLIElement {
+    const item = document.createElement("li");
+    item.className = "systems-remote-item systems-mysql";
+    const tag = document.createElement("span");
+    tag.className = "systems-remote-tag";
+    tag.textContent = label;
+    const text = document.createElement("span");
+    text.className = "systems-mono";
+    setBreakableText(text, value);
+    text.title = value;
+    item.append(tag, text, buildFieldCopy(system, field));
+    return item;
+  }
+
+  function buildFieldCopy(system: SystemSummary, field: keyof typeof COPY_FIELD_LABELS): HTMLButtonElement {
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "systems-remote-copy";
+    copy.dataset.fieldCopy = field;
+    const label = `Copy ${COPY_FIELD_LABELS[field]}`;
+    copy.setAttribute("aria-label", `${label} for ${system.name}`);
+    copy.title = label;
+    copy.innerHTML = COPY_ICON;
+    return copy;
   }
 
   function concealedMark(): HTMLElement {
@@ -632,6 +701,24 @@
 
     item.append(control, copy);
     return item;
+  }
+
+  async function recordFieldCopy(systemId: number, field: keyof typeof COPY_FIELD_LABELS): Promise<boolean> {
+    try {
+      const response = await fetch(cmsApi.url(`/systems/${systemId}/credential-access`), {
+        method: "POST",
+        headers: cmsApi.headers({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ movement: "field_copied", field }),
+        keepalive: true,
+      });
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  async function copyField(button: HTMLButtonElement, system: SystemSummary, field: keyof typeof COPY_FIELD_LABELS, value: string): Promise<void> {
+    await copySecret(button, value, COPY_FIELD_LABELS[field], () => recordFieldCopy(system.id, field));
   }
 
   async function recordCredentialAccess(systemId: number, movement: "viewed" | "revealed" | "remote_viewed" | "password_copied", type?: RemoteType): Promise<boolean> {
@@ -781,7 +868,7 @@
       return;
     }
     if (beforeCopy && !await beforeCopy()) {
-      live.textContent = "The password wasn't copied. Try again.";
+      live.textContent = `${label} wasn't copied. Try again.`;
       return;
     }
     const previous = button.getAttribute("aria-label") ?? "";
@@ -1099,6 +1186,8 @@
       remote_access: remote,
       local_ip: detail.local_ip,
       mysql_host: detail.mysql_host,
+      mysql_username: detail.mysql_username,
+      mysql_password: detail.mysql_password,
       domain: detail.domain,
       vm_host: detail.vm_host,
       details_hidden: false,

@@ -971,6 +971,34 @@ body.desk[data-page="systems"] .systems-remote-tag {
   line-height: 16px;
 }
 
+body.desk[data-page="systems"] .systems-mysql-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+body.desk[data-page="systems"] .systems-mysql {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 32px;
+  column-gap: 8px;
+  align-items: center;
+}
+
+body.desk[data-page="systems"] .systems-mysql .systems-remote-tag {
+  width: 72px;
+  min-width: 72px;
+  justify-content: flex-start;
+}
+
+body.desk[data-page="systems"] .systems-mysql .systems-mono {
+  max-width: none;
+}
+
+body.desk[data-page="systems"] .systems-mysql:hover .systems-remote-copy,
+body.desk[data-page="systems"] .systems-mysql:focus-within .systems-remote-copy {
+  opacity: 1;
+}
+
 body.desk .dashboard-refresh-warning {
   border-radius: 8px;
   background: var(--desk-raised);
